@@ -20,106 +20,9 @@ const I = {
   donut: "1551024601-bec78aea704b",
   cake: "1578985545062-69928b1d9587",
 };
-const DATA = {
-  restaurant: [
-    {
-      k: "مشويات",
-      i: "🔥",
-      items: [
-        [
-          "r1",
-          "ستيك ريب آي",
-          "قطعة ريب آي 300جم مع بطاطس وخضار سوتيه",
-          350,
-          "steak",
-        ],
-        [
-          "r2",
-          "مشاوي مشكلة",
-          "كفتة وشيش طاووق وريش مع أرز وسلطات",
-          290,
-          "food",
-        ],
-        ["r3", "سمك مشوي", "فيليه سلمون مشوي مع صوص الليمون", 320, "fish"],
-      ],
-    },
-    {
-      k: "برجر",
-      i: "🍔",
-      items: [
-        [
-          "r4",
-          "كلاسيك برجر",
-          "180جم لحم بقري، جبنة شيدر، صوص خاص",
-          160,
-          "burger",
-        ],
-        [
-          "r5",
-          "دبل تشيز",
-          "قطعتين لحم مع جبنة مضاعفة وبصل مكرمل",
-          210,
-          "burger",
-        ],
-        ["r6", "برجر دجاج مقرمش", "صدر دجاج مقرمش مع كولسلو", 150, "burger"],
-      ],
-    },
-    {
-      k: "بيتزا ومكرونة",
-      i: "🍕",
-      items: [
-        ["r7", "بيتزا مارجريتا", "جبنة موتزاريلا وطماطم وريحان", 140, "pizza"],
-        ["r8", "بيتزا بيبروني", "بيبروني حار مع جبنة مضاعفة", 170, "pizza"],
-        ["r9", "باستا ألفريدو", "كريمة بالدجاج والمشروم", 155, "pasta"],
-      ],
-    },
-    {
-      k: "سلطات",
-      i: "🥗",
-      items: [
-        ["r10", "سيزر سلطة", "خس، دجاج مشوي، بارميزان، كروتون", 110, "salad"],
-        ["r11", "سلطة يونانية", "خيار، طماطم، زيتون، جبنة فيتا", 95, "salad"],
-      ],
-    },
-  ],
-  cafe: [
-    {
-      k: "قهوة ساخنة",
-      i: "☕",
-      items: [
-        ["c1", "إسبريسو", "شوت مركّز من البن المحمص طازجًا", 55, "coffee"],
-        ["c2", "كابتشينو", "إسبريسو مع رغوة حليب كريمية", 75, "c2"],
-        ["c3", "فلات وايت", "إسبريسو دبل مع حليب مخملي", 85, "latte"],
-      ],
-    },
-    {
-      k: "مشروبات باردة",
-      i: "🧊",
-      items: [
-        ["c4", "آيس لاتيه", "إسبريسو مع حليب بارد وثلج", 85, "latte"],
-        ["c5", "كولد برو", "قهوة منقوعة 18 ساعة", 90, "coffee"],
-        ["c6", "فرابتشينو كراميل", "مثلج مع كراميل وكريمة", 95, "c2"],
-      ],
-    },
-    {
-      k: "حلويات",
-      i: "🍰",
-      items: [
-        ["c7", "تشيز كيك", "تشيز كيك نيويورك مع صوص التوت", 110, "cake"],
-        ["c8", "براونيز", "شوكولاتة داكنة دافئة مع آيس كريم", 95, "cake"],
-        ["c9", "دونات", "دونات طازجة بنكهات متعددة", 60, "donut"],
-      ],
-    },
-  ],
-};
-const OFFERS = [
-  { id: "r1", price: 299 },
-  { id: "r4", price: 130 },
-  { id: "r7", price: 115 },
-  { id: "c2", price: 60 },
-  { id: "c4", price: 68 },
-  { id: "c7", price: 88 },
-];
+let CATEGORIES;
+let PRODUCTS;
+let OFFERS;
 const $ = (s) => document.querySelector(s),
   P = document.body.dataset.page;
 const escapeHtml = (value) =>
@@ -202,17 +105,17 @@ document.addEventListener("mousemove", (e) => {
     k = t.classList.contains("tilt") ? 24 : 14;
   t.style.transform = `perspective(800px) rotateY(${x * k}deg) rotateX(${-y * k}deg)`;
 });
-const img = (k) => U(I[k]);
-function addToCart(x, type, qty, note = "", price = x[3]) {
+const img = (source) => (I[source] ? U(I[source]) : source);
+function addToCart(x, type, qty, note = "", price = x.price) {
   const c = get(),
-    f = c.find((i) => i.id == x[0] && i.note == note && i.price == price);
+    f = c.find((i) => i.id == x.id && i.note == note && i.price == price);
   if (f) f.qty += qty;
   else
     c.push({
-      id: x[0],
-      name: x[1],
+      id: x.id,
+      name: x.name,
       price,
-      img: x[4],
+      img: x.image,
       type,
       qty,
       note,
@@ -221,26 +124,30 @@ function addToCart(x, type, qty, note = "", price = x[3]) {
   toast("تمت الإضافة للسلة ✓");
 }
 function menu(type) {
-  const cats = DATA[type],
+  const cats = CATEGORIES.filter((category) => category.type == type),
+    products = PRODUCTS,
     sb = $("#side"),
     mn = $("#menu");
   sb.innerHTML = cats
     .map(
       (c, n) =>
-        `<button data-n="${n}"><span>${c.i}</span><b>${c.k}</b></button>`,
+        `<button data-n="${n}"><span>${c.icon}</span><b>${c.name}</b></button>`,
     )
     .join("");
   function show(n) {
-    const c = cats[n];
+    const c = cats[n],
+      categoryProducts = products.filter(
+        (product) => product.categoryId == c.id,
+      );
     sb.querySelectorAll("button").forEach((b, i) =>
       b.classList.toggle("on", i == n),
     );
     mn.innerHTML =
-      `<h2 class="ttl">${c.i} ${c.k}</h2><div class="grid">` +
-      c.items
+      `<h2 class="ttl">${c.icon} ${c.name}</h2><div class="grid">` +
+      categoryProducts
         .map(
           (x, i) =>
-            `<article class="card" data-id="${x[0]}" style="animation-delay:${i * 0.1}s"><img src="${img(x[4])}" alt="${x[1]}" loading="lazy"><div class="bd"><h3>${x[1]}</h3><p>${x[2]}</p><div class="row"><span class="price">${x[3]} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
+            `<article class="card" data-id="${x.id}" style="animation-delay:${i * 0.1}s"><img src="${img(x.image)}" alt="${x.name}" loading="lazy"><div class="bd"><h3>${x.name}</h3><p>${x.description}</p><div class="row"><span class="price">${x.price} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
         )
         .join("") +
       "</div>";
@@ -284,7 +191,7 @@ function menu(type) {
     if (a == "+") q.textContent = +q.textContent + 1;
     if (a == "-") q.textContent = Math.max(1, q.textContent - 1);
     if (a == "add") {
-      const x = cats.flatMap((c) => c.items).find((i) => i[0] == cd.dataset.id),
+      const x = products.find((product) => product.id == cd.dataset.id),
         note = cd.querySelector("input").value.trim();
       addToCart(x, type, +q.textContent, note);
       q.textContent = 1;
@@ -298,25 +205,20 @@ function menu(type) {
   show(0);
 }
 function offers() {
-  const products = DATA.restaurant
-    .flatMap((category) => category.items.map((item) => [item, "restaurant"]))
-    .concat(
-      DATA.cafe.flatMap((category) =>
-        category.items.map((item) => [item, "cafe"]),
-      ),
-    );
-  const items = OFFERS.map((offer) => ({
-    ...offer,
-    product: products.find(([item]) => item[0] == offer.id)[0],
-    type: products.find(([item]) => item[0] == offer.id)[1],
-  }));
+  const items = OFFERS.map((offer) => {
+    const product = PRODUCTS.find((item) => item.id == offer.id),
+      category = CATEGORIES.find(
+        (item) => item.id == product.categoryId,
+      );
+    return { ...offer, product, type: category.type };
+  });
   const mn = $("#offers");
   mn.innerHTML =
     `<section class="offers-hero"><span class="offers-spark" aria-hidden="true">✦</span><div><span class="offers-kicker">اختيارات Queen الخاصة</span><h1>عروض تستاهل التجربة</h1><p>أشهى اختيارات المطعم والكافيه، بسعر مميز لفترة محدودة.</p></div><span class="offers-seal" aria-hidden="true">عروض<br>خاصة</span></section><div class="offers-grid">` +
     items
       .map(({ product: x, price, type }, i) => {
-        const discount = Math.round(((x[3] - price) / x[3]) * 100);
-        return `<article class="card offer-card" data-id="${x[0]}" data-price="${price}" style="animation-delay:${i * 0.08}s"><div class="offer-image"><img src="${img(x[4])}" alt="${x[1]}" loading="lazy"><span class="offer-tag">خصم ${discount}٪</span></div><div class="bd"><span class="offer-type">${type == "restaurant" ? "🍽 من المطعم" : "☕ من الكافيه"}</span><h3>${x[1]}</h3><p>${x[2]}</p><div class="row"><div class="offer-prices"><del>${x[3]} ج.م</del><span class="price">${price} ج.م</span></div><div class="q"><button data-a="-" aria-label="تقليل الكمية">−</button><b>1</b><button data-a="+" aria-label="زيادة الكمية">+</button></div></div><button class="btn" data-a="add">أضف للسلة</button></div></article>`;
+        const discount = Math.round(((x.price - price) / x.price) * 100);
+        return `<article class="card offer-card" data-id="${x.id}" data-price="${price}" style="animation-delay:${i * 0.08}s"><div class="offer-image"><img src="${img(x.image)}" alt="${x.name}" loading="lazy"><span class="offer-tag">خصم ${discount}٪</span></div><div class="bd"><span class="offer-type">${type == "restaurant" ? "🍽 من المطعم" : "☕ من الكافيه"}</span><h3>${x.name}</h3><p>${x.description}</p><div class="row"><div class="offer-prices"><del>${x.price} ج.م</del><span class="price">${price} ج.م</span></div><div class="q"><button data-a="-" aria-label="تقليل الكمية">−</button><b>1</b><button data-a="+" aria-label="زيادة الكمية">+</button></div></div><button class="btn" data-a="add">أضف للسلة</button></div></article>`;
       })
       .join("") +
     "</div>";
@@ -330,7 +232,7 @@ function offers() {
     if (button.dataset.a == "-")
       quantity.textContent = Math.max(1, +quantity.textContent - 1);
     if (button.dataset.a == "add") {
-      const item = items.find(({ product }) => product[0] == card.dataset.id);
+      const item = items.find(({ id }) => id == card.dataset.id);
       addToCart(item.product, item.type, +quantity.textContent, "", item.price);
       quantity.textContent = 1;
     }
@@ -514,7 +416,26 @@ function initParticleBackground() {
     ],
   });
 }
-if (P == "restaurant" || P == "cafe") menu(P);
 if (P == "cart") cart();
-if (P == "offers") offers();
+if (P == "restaurant" || P == "cafe" || P == "offers") {
+  const categories = QUEEN_CATEGORIES,
+    products = QUEEN_PRODUCTS,
+    offerList = QUEEN_OFFERS;
+  if (
+    !Array.isArray(categories) ||
+    !Array.isArray(products) ||
+    !Array.isArray(offerList)
+  ) {
+    const error = new Error("ملف المنتجات والأقسام غير موجود أو غير صالح");
+    console.error("تعذر تحميل بيانات المنتجات والأقسام:", error);
+    const target = P == "offers" ? $("#offers") : $("#menu");
+    target.textContent = error.message;
+  } else {
+    CATEGORIES = categories;
+    PRODUCTS = products;
+    OFFERS = offerList;
+    if (P == "restaurant" || P == "cafe") menu(P);
+    if (P == "offers") offers();
+  }
+}
 if (P == "restaurant" || P == "cafe") initParticleBackground();
