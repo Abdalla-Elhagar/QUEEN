@@ -1,5 +1,5 @@
 const WA = "201129352754";
-const INFO = "📍 العنوان هنا · 📞 01000000000 · 🕒 يوميًا 10 ص – 2 ص";
+const INFO = "📍 العنوان هنا · 📞 01129352754 · 🕒 يوميًا 10 ص – 2 ص";
 const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/your-page",
   instagram: "https://www.instagram.com/your-page",
@@ -123,14 +123,16 @@ const OFFERS = [
 const $ = (s) => document.querySelector(s),
   P = document.body.dataset.page;
 const escapeHtml = (value) =>
-  String(value).replace(/[&<>"']/g, (character) =>
-    ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    })[character],
+  String(value).replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character],
   );
 const get = () => JSON.parse(localStorage.getItem("qc") || "[]"),
   set = (c) => {
@@ -172,8 +174,14 @@ if (home) {
     const bounds = panel.getBoundingClientRect();
     panel.style.setProperty("--start-x", `${bounds.left}px`);
     panel.style.setProperty("--start-y", `${bounds.top}px`);
-    panel.style.setProperty("--start-scale-x", bounds.width / window.innerWidth);
-    panel.style.setProperty("--start-scale-y", bounds.height / window.innerHeight);
+    panel.style.setProperty(
+      "--start-scale-x",
+      bounds.width / window.innerWidth,
+    );
+    panel.style.setProperty(
+      "--start-scale-y",
+      bounds.height / window.innerHeight,
+    );
     home.classList.add("is-selecting");
     panel.classList.add("selected");
     window.setTimeout(
@@ -317,7 +325,8 @@ function offers() {
       card = e.target.closest(".offer-card");
     if (!button || !card) return;
     const quantity = card.querySelector(".q b");
-    if (button.dataset.a == "+") quantity.textContent = +quantity.textContent + 1;
+    if (button.dataset.a == "+")
+      quantity.textContent = +quantity.textContent + 1;
     if (button.dataset.a == "-")
       quantity.textContent = Math.max(1, +quantity.textContent - 1);
     if (button.dataset.a == "add") {
