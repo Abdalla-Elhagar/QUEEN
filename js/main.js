@@ -223,27 +223,39 @@ function addToCart(x, type, qty, note = "", price = x[3]) {
 function menu(type) {
   const cats = DATA[type],
     sb = $("#side"),
+    categoryTabs = $("#categories"),
     mn = $("#menu");
-  sb.innerHTML = cats
-    .map(
-      (c, n) =>
-        `<button data-n="${n}"><span>${c.i}</span><b>${c.k}</b></button>`,
-    )
-    .join("");
+  const categoryNav = categoryTabs || sb;
+  categoryNav.innerHTML =
+    (categoryTabs
+      ? `<button data-n="all"><span>✦</span><b>الكل</b></button>`
+      : "") +
+    cats
+      .map(
+        (c, n) =>
+          `<button data-n="${n}"><span>${c.i}</span><b>${c.k}</b></button>`,
+      )
+      .join("");
   function show(n) {
-    const c = cats[n];
-    sb.querySelectorAll("button").forEach((b, i) =>
-      b.classList.toggle("on", i == n),
-    );
-    mn.innerHTML =
-      `<h2 class="ttl">${c.i} ${c.k}</h2><div class="grid">` +
-      c.items
-        .map(
-          (x, i) =>
-            `<article class="card" data-id="${x[0]}" style="animation-delay:${i * 0.1}s"><img src="${img(x[4])}" alt="${x[1]}" loading="lazy"><div class="bd"><h3>${x[1]}</h3><p>${x[2]}</p><div class="row"><span class="price">${x[3]} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
-        )
-        .join("") +
-      "</div>";
+    const selectedCategories = n === "all" ? cats : [cats[Number(n)]];
+    categoryNav.querySelectorAll("button").forEach((button) => {
+      const active = button.dataset.n === String(n);
+      button.classList.toggle("on", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    mn.innerHTML = selectedCategories
+      .map(
+        (c) =>
+          `<section class="menu-section"><h2 class="ttl">${c.i} ${c.k}</h2><div class="grid">` +
+          c.items
+            .map(
+              (x, i) =>
+                `<article class="card" data-id="${x[0]}" style="animation-delay:${i * 0.1}s"><img src="${img(x[4])}" alt="${x[1]}" loading="lazy"><div class="bd"><h3>${x[1]}</h3><p>${x[2]}</p><div class="row"><span class="price">${x[3]} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
+            )
+            .join("") +
+          "</div></section>",
+      )
+      .join("");
     mn.querySelectorAll(".card").forEach((card) => {
       const cartItem = get().find(
         (item) => item.id == card.dataset.id && item.type == type,
@@ -258,9 +270,9 @@ function menu(type) {
       }
     });
   }
-  sb.onclick = (e) => {
+  categoryNav.onclick = (e) => {
     const b = e.target.closest("button");
-    if (b) show(+b.dataset.n);
+    if (b) show(b.dataset.n);
   };
   mn.onclick = (e) => {
     const a = e.target.dataset.a,
@@ -295,7 +307,7 @@ function menu(type) {
       button.textContent = "إزالة من السلة";
     }
   };
-  show(0);
+  show(categoryTabs ? "all" : "0");
 }
 function offers() {
   const products = DATA.restaurant
