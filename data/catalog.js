@@ -183,8 +183,8 @@ const QUEEN_PRODUCTS = [
     image: "../img/productsImg/des1.jpeg",
     categoryId: "cafe-3",
   },
-   {
-    id: "c7",
+  {
+    id: "c16",
     name: "سموزي مانجو",
     description: "تشيز كيك نيويورك مع صوص التوت",
     price: 110,
@@ -216,7 +216,7 @@ const QUEEN_PRODUCTS = [
     categoryId: "cafe-9",
   },
   {
-    id: "c8",
+    id: "c17",
     name: "تشيز كيك سبيشسال",
     description: "شوكولاتة داكنة دافئة مع آيس كريم",
     price: 95,
@@ -224,16 +224,13 @@ const QUEEN_PRODUCTS = [
     categoryId: "cafe-3",
   },
   {
-    id: "c9",
+    id: "c18",
     name: "بان كيك ميكس صوص",
     description: "دونات طازجة بنكهات متعددة",
     price: 60,
     image: "../img/productsImg/ban1.webp",
     categoryId: "cafe-10",
   },
-       
-
-
 
   // -----------------
   {
@@ -260,7 +257,6 @@ const QUEEN_PRODUCTS = [
     image: "../img/productsImg/des6.jpeg",
     categoryId: "cafe-3",
   },
-
 ];
 
 const QUEEN_OFFERS = [
@@ -277,15 +273,15 @@ const QUEEN_OFFERS = [
     price: 115,
   },
   {
-    id: "c2",
+    id: "c8",
     price: 60,
   },
   {
-    id: "c4",
+    id: "c16",
     price: 68,
   },
   {
-    id: "c7",
+    id: "c18",
     price: 88,
   },
 ];
