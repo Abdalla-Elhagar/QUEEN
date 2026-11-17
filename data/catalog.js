@@ -180,7 +180,7 @@ const QUEEN_PRODUCTS = [
     name: "شوكلت كيك",
     description: "كيك شوكولاتة بطبقات طرية ونكهة كاكاو غنية",
     price: 110,
-    image: "../img/productsImg/des1.jpeg",
+    image: "img/productsImg/des1.jpeg",
     categoryId: "cafe-3",
   },
   {
@@ -188,7 +188,7 @@ const QUEEN_PRODUCTS = [
     name: "سموزي مانجو",
     description: "سموزي مانجو بارد بقوام ناعم وطعم فاكهي منعش",
     price: 110,
-    image: "../img/productsImg/smosy1.jpeg",
+    image: "img/productsImg/smosy1.jpeg",
     categoryId: "cafe-4",
   },
   {
@@ -196,7 +196,7 @@ const QUEEN_PRODUCTS = [
     name: "مولتين كيك نوتيلا",
     description: "كيك شوكولاتة دافئ بقلب نوتيلا سايح",
     price: 95,
-    image: "../img/productsImg/des2.jpeg",
+    image: "img/productsImg/des2.jpeg",
     categoryId: "cafe-3",
   },
   {
@@ -204,7 +204,7 @@ const QUEEN_PRODUCTS = [
     name: "وافل نوتيلا",
     description: "وافل ذهبي مقرمش مغطى بصوص نوتيلا الغني",
     price: 60,
-    image: "../img/productsImg/waffel1.jpeg",
+    image: "img/productsImg/waffel1.jpeg",
     categoryId: "cafe-9",
   },
   {
@@ -212,7 +212,7 @@ const QUEEN_PRODUCTS = [
     name: "وافل ميكس صوص",
     description: "وافل طازج مقرمش مع تشكيلة من الصوصات",
     price: 60,
-    image: "../img/productsImg/waffel2.jpeg",
+    image: "img/productsImg/waffel2.jpeg",
     categoryId: "cafe-9",
   },
   {
@@ -220,7 +220,7 @@ const QUEEN_PRODUCTS = [
     name: "تشيز كيك سبيشسال",
     description: "تشيز كيك كريمي بقوام ناعم ونكهة غنية",
     price: 95,
-    image: "../img/productsImg/des3.jpeg",
+    image: "img/productsImg/des3.jpeg",
     categoryId: "cafe-3",
   },
   {
@@ -228,7 +228,7 @@ const QUEEN_PRODUCTS = [
     name: "بان كيك ميكس صوص",
     description: "بان كيك طري وشهي مع تشكيلة من الصوصات",
     price: 60,
-    image: "../img/productsImg/ban1.webp",
+    image: "img/productsImg/ban1.webp",
     categoryId: "cafe-10",
   },
 
@@ -238,7 +238,7 @@ const QUEEN_PRODUCTS = [
     name: "سينابون سبيشيال",
     description: "رول سينابون طري بنكهة القرفة ولمسة من الصوص الغني",
     price: 60,
-    image: "../img/productsImg/des4.jpeg",
+    image: "img/productsImg/des4.jpeg",
     categoryId: "cafe-3",
   },
   {
@@ -246,7 +246,7 @@ const QUEEN_PRODUCTS = [
     name: "ريد فيلفت",
     description: "كيك ريد فيلفت بطبقات مخملية ونكهة كاكاو مميزة",
     price: 95,
-    image: "../img/productsImg/des5.jpeg",
+    image: "img/productsImg/des5.jpeg",
     categoryId: "cafe-3",
   },
   {
@@ -254,7 +254,7 @@ const QUEEN_PRODUCTS = [
     name: "براونيز",
     description: "براونيز شوكولاتة بقوام كثيف وقطعة طرية",
     price: 60,
-    image: "../img/productsImg/des6.jpeg",
+    image: "img/productsImg/des6.jpeg",
     categoryId: "cafe-3",
   },
 ];

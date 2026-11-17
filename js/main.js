@@ -370,7 +370,12 @@ document.addEventListener("mousemove", (e) => {
     k = t.classList.contains("tilt") ? 24 : 14;
   t.style.transform = `perspective(800px) rotateY(${x * k}deg) rotateX(${-y * k}deg)`;
 });
-const img = (source) => (I[source] ? U(I[source]) : source);
+const img = (source) => {
+  if (I[source]) return U(I[source]);
+  return typeof source === "string" && source.startsWith("../img/")
+    ? source.slice(3)
+    : source;
+};
 function addToCart(x, type, qty, note = "", price = x.price) {
   const c = get(),
     f = c.find((i) => i.id == x.id && i.note == note && i.price == price);
