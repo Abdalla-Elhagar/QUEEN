@@ -178,7 +178,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c7",
     name: "شوكلت كيك",
-    description: "تشيز كيك نيويورك مع صوص التوت",
+    description: "كيك شوكولاتة بطبقات طرية ونكهة كاكاو غنية",
     price: 110,
     image: "../img/productsImg/des1.jpeg",
     categoryId: "cafe-3",
@@ -186,7 +186,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c16",
     name: "سموزي مانجو",
-    description: "تشيز كيك نيويورك مع صوص التوت",
+    description: "سموزي مانجو بارد بقوام ناعم وطعم فاكهي منعش",
     price: 110,
     image: "../img/productsImg/smosy1.jpeg",
     categoryId: "cafe-4",
@@ -194,7 +194,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c8",
     name: "مولتين كيك نوتيلا",
-    description: "شوكولاتة داكنة دافئة مع آيس كريم",
+    description: "كيك شوكولاتة دافئ بقلب نوتيلا سايح",
     price: 95,
     image: "../img/productsImg/des2.jpeg",
     categoryId: "cafe-3",
@@ -202,7 +202,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c9",
     name: "وافل نوتيلا",
-    description: "دونات طازجة بنكهات متعددة",
+    description: "وافل ذهبي مقرمش مغطى بصوص نوتيلا الغني",
     price: 60,
     image: "../img/productsImg/waffel1.jpeg",
     categoryId: "cafe-9",
@@ -210,7 +210,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c10",
     name: "وافل ميكس صوص",
-    description: "دونات طازجة بنكهات متعددة",
+    description: "وافل طازج مقرمش مع تشكيلة من الصوصات",
     price: 60,
     image: "../img/productsImg/waffel2.jpeg",
     categoryId: "cafe-9",
@@ -218,7 +218,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c17",
     name: "تشيز كيك سبيشسال",
-    description: "شوكولاتة داكنة دافئة مع آيس كريم",
+    description: "تشيز كيك كريمي بقوام ناعم ونكهة غنية",
     price: 95,
     image: "../img/productsImg/des3.jpeg",
     categoryId: "cafe-3",
@@ -226,7 +226,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c18",
     name: "بان كيك ميكس صوص",
-    description: "دونات طازجة بنكهات متعددة",
+    description: "بان كيك طري وشهي مع تشكيلة من الصوصات",
     price: 60,
     image: "../img/productsImg/ban1.webp",
     categoryId: "cafe-10",
@@ -236,7 +236,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c13",
     name: "سينابون سبيشيال",
-    description: "دونات طازجة بنكهات متعددة",
+    description: "رول سينابون طري بنكهة القرفة ولمسة من الصوص الغني",
     price: 60,
     image: "../img/productsImg/des4.jpeg",
     categoryId: "cafe-3",
@@ -244,7 +244,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c14",
     name: "ريد فيلفت",
-    description: "شوكولاتة داكنة دافئة مع آيس كريم",
+    description: "كيك ريد فيلفت بطبقات مخملية ونكهة كاكاو مميزة",
     price: 95,
     image: "../img/productsImg/des5.jpeg",
     categoryId: "cafe-3",
@@ -252,7 +252,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c15",
     name: "براونيز",
-    description: "دونات طازجة بنكهات متعددة",
+    description: "براونيز شوكولاتة بقوام كثيف وقطعة طرية",
     price: 60,
     image: "../img/productsImg/des6.jpeg",
     categoryId: "cafe-3",

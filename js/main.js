@@ -25,6 +25,31 @@ let PRODUCTS;
 let OFFERS;
 const $ = (s) => document.querySelector(s),
   P = document.body.dataset.page;
+const pageLoader = document.createElement("div");
+pageLoader.className = "queen-loader";
+pageLoader.setAttribute("role", "status");
+pageLoader.setAttribute("aria-label", "جاري تحميل الصفحة");
+pageLoader.innerHTML = `<div class="loader-stage" aria-hidden="true"><div class="loader-orbit loader-orbit-one"><span></span></div><div class="loader-orbit loader-orbit-two"><span></span></div><div class="loader-coin"><span class="loader-coin-face loader-coin-front"><b>Q</b><small>QUEEN</small></span><span class="loader-coin-face loader-coin-back"><b>✦</b><small>ROYAL</small></span></div><i class="loader-spark loader-spark-one"></i><i class="loader-spark loader-spark-two"></i><i class="loader-spark loader-spark-three"></i></div><p class="loader-caption">استعد لرحلة ملوكية بين أشهى الأطباق والحلويات</p><div class="loader-track" aria-hidden="true"><span></span></div>`;
+document.body.prepend(pageLoader);
+document.body.classList.add("is-loading");
+let pageLoaderDismissed = false;
+const dismissPageLoader = () => {
+  if (pageLoaderDismissed) return;
+  pageLoaderDismissed = true;
+  window.setTimeout(
+    () => {
+      pageLoader.classList.add("is-hidden");
+      window.setTimeout(() => {
+        document.body.classList.remove("is-loading");
+        pageLoader.remove();
+      }, 700);
+    },
+    Math.max(0, 1200 - performance.now()),
+  );
+};
+if (document.readyState === "complete") dismissPageLoader();
+else window.addEventListener("load", dismissPageLoader, { once: true });
+window.setTimeout(dismissPageLoader, 3500);
 const escapeHtml = (value) =>
   String(value).replace(
     /[&<>"']/g,
@@ -37,6 +62,246 @@ const escapeHtml = (value) =>
         "'": "&#39;",
       })[character],
   );
+const productModal = document.createElement("div");
+productModal.className = "product-modal";
+productModal.setAttribute("aria-hidden", "true");
+productModal.innerHTML = `<div class="product-modal-backdrop" data-product-modal-close></div><section class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" tabindex="-1"><button class="product-modal-close" type="button" data-product-modal-close aria-label="إغلاق">×</button><div class="product-modal-content"><button class="product-modal-image" type="button" aria-label="عرض الصورة بحجم الشاشة"><img alt=""><span>اضغط على الصورة لعرضها بحجم الشاشة</span></button><div class="product-modal-info"><span class="product-modal-category"></span><h2 id="product-modal-title"></h2><p class="product-modal-description"></p><p class="product-modal-old-price" hidden></p><strong class="product-modal-price"></strong><div class="product-modal-note-field"><label class="product-modal-note-label" for="product-modal-note">ملاحظات الطلب</label><input class="product-modal-note" id="product-modal-note" placeholder="اكتب أي ملاحظات على المنتج"></div><div class="product-modal-quantity-row"><span>الكمية</span><div class="q"><button type="button" data-modal-action="decrease" aria-label="تقليل الكمية">−</button><b class="product-modal-quantity">1</b><button type="button" data-modal-action="increase" aria-label="زيادة الكمية">+</button></div></div><button class="btn product-modal-add" type="button" data-modal-action="add">أضف للسلة</button></div></div></section>`;
+const productLightbox = document.createElement("div");
+productLightbox.className = "product-lightbox";
+productLightbox.setAttribute("aria-hidden", "true");
+productLightbox.innerHTML = `<button class="product-lightbox-close" type="button" aria-label="إغلاق الصورة">×</button><img alt="">`;
+productModal.append(productLightbox);
+document.body.append(productModal);
+let productModalOpener;
+let modalProduct;
+let modalProductType;
+let modalProductPrice;
+let modalProductIsOffer = false;
+const setProductModalCartState = (inCart) => {
+  const noteField = productModal.querySelector(".product-modal-note-field");
+  const quantityRow = productModal.querySelector(".product-modal-quantity-row");
+  const addButton = productModal.querySelector(".product-modal-add");
+  noteField.hidden = modalProductIsOffer || inCart;
+  quantityRow.hidden = inCart;
+  addButton.dataset.modalAction = inCart ? "remove" : "add";
+  addButton.classList.toggle("remove-btn", inCart);
+  addButton.textContent = inCart ? "إزالة من السلة" : "أضف للسلة";
+};
+const updateMenuCardCartState = (inCart, note) => {
+  if (!productModalOpener || !productModalOpener.closest("#menu")) return;
+  const card = productModalOpener;
+  const cardNote = card.querySelector("input");
+  const button = card.querySelector(".btn");
+  const cardQuantity = card.querySelector(".q b");
+  card.classList.toggle("in-cart", inCart);
+  if (cardNote) cardNote.value = note;
+  if (cardQuantity) cardQuantity.textContent = "1";
+  button.dataset.a = inCart ? "remove" : "add";
+  button.classList.toggle("remove-btn", inCart);
+  button.textContent = inCart ? "إزالة من السلة" : "أضف للسلة";
+};
+const updateProductCardQuantity = (quantity) => {
+  const cardQuantity =
+    productModalOpener && productModalOpener.querySelector(".q b");
+  if (cardQuantity) cardQuantity.textContent = String(quantity);
+};
+const closeProductLightbox = () => {
+  productLightbox.classList.remove("is-open");
+  productLightbox.setAttribute("aria-hidden", "true");
+  productModal
+    .querySelector(".product-modal-panel")
+    .setAttribute("aria-hidden", "false");
+  productModal.querySelector(".product-modal-image").focus();
+};
+const closeProductModal = () => {
+  closeProductLightbox();
+  productModal.classList.remove("is-open");
+  productModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("product-modal-open");
+  if (productModalOpener && productModalOpener.isConnected)
+    productModalOpener.focus();
+  productModalOpener = null;
+};
+const openProductLightbox = () => {
+  const image = productModal.querySelector(".product-modal-image img");
+  const lightboxImage = productLightbox.querySelector("img");
+  lightboxImage.src = image.src;
+  lightboxImage.alt = image.alt;
+  productLightbox.setAttribute(
+    "aria-label",
+    `صورة ${productModal.querySelector("#product-modal-title").textContent}`,
+  );
+  productModal
+    .querySelector(".product-modal-panel")
+    .setAttribute("aria-hidden", "true");
+  productLightbox.classList.add("is-open");
+  productLightbox.setAttribute("aria-hidden", "false");
+  productLightbox.querySelector("button").focus();
+};
+const openProductModal = (card) => {
+  const image = card.querySelector("img");
+  const title = card.querySelector(".bd h3");
+  const description = card.querySelector(".bd p");
+  const price = card.querySelector(".price");
+  const product = PRODUCTS.find((item) => item.id == card.dataset.id);
+  if (!image || !title || !description || !price || !product) return;
+  const category =
+    card.querySelector(".offer-type") ||
+    (card.closest(".menu-section") &&
+      card.closest(".menu-section").querySelector(".ttl"));
+  modalProduct = product;
+  modalProductType = card.dataset.productType;
+  modalProductIsOffer = card.classList.contains("offer-card");
+  modalProductPrice = card.dataset.price
+    ? Number(card.dataset.price)
+    : product.price;
+  const oldPrice = card.querySelector("del");
+  const modalImage = productModal.querySelector(".product-modal-image img");
+  modalImage.src = image.currentSrc || image.src;
+  modalImage.alt = image.alt;
+  productModal.querySelector(".product-modal-category").textContent = category
+    ? category.textContent.trim()
+    : "";
+  productModal.querySelector("#product-modal-title").textContent =
+    title.textContent;
+  productModal.querySelector(".product-modal-description").textContent =
+    description.textContent;
+  const oldPriceText = productModal.querySelector(".product-modal-old-price");
+  oldPriceText.hidden = !oldPrice;
+  oldPriceText.textContent = oldPrice
+    ? `السعر قبل العرض: ${oldPrice.textContent}`
+    : "";
+  productModal.querySelector(".product-modal-price").textContent =
+    price.textContent;
+  const existingItem = get().find(
+    (item) => item.id == product.id && item.type == modalProductType,
+  );
+  const cardNote = card.querySelector("input");
+  productModal.querySelector(".product-modal-note").value =
+    cardNote && cardNote.value
+      ? cardNote.value
+      : existingItem
+        ? existingItem.note || ""
+        : "";
+  const inCart = Boolean(existingItem) && !modalProductIsOffer;
+  const cardQuantity = card.querySelector(".q b");
+  productModal.querySelector(".product-modal-quantity").textContent =
+    inCart || !cardQuantity ? "1" : cardQuantity.textContent;
+  setProductModalCartState(inCart);
+  productModalOpener = card;
+  productModal.classList.add("is-open");
+  productModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("product-modal-open");
+  productModal.querySelector(".product-modal-close").focus();
+};
+const keepFocusInside = (event, container) => {
+  if (event.key !== "Tab") return;
+  const focusable = Array.from(
+    container.querySelectorAll(
+      'button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter(
+    (element) =>
+      element.getClientRects().length &&
+      window.getComputedStyle(element).visibility !== "hidden",
+  );
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+};
+productModal.addEventListener("click", (event) => {
+  if (event.target.closest(".product-modal-image")) openProductLightbox();
+  else if (event.target.closest('[data-modal-action="increase"]')) {
+    const quantity = productModal.querySelector(".product-modal-quantity");
+    quantity.textContent = Number(quantity.textContent) + 1;
+    updateProductCardQuantity(Number(quantity.textContent));
+  } else if (event.target.closest('[data-modal-action="decrease"]')) {
+    const quantity = productModal.querySelector(".product-modal-quantity");
+    quantity.textContent = Math.max(1, Number(quantity.textContent) - 1);
+    updateProductCardQuantity(Number(quantity.textContent));
+  } else if (event.target.closest('[data-modal-action="add"]')) {
+    const quantity = Number(
+      productModal.querySelector(".product-modal-quantity").textContent,
+    );
+    const note = modalProductIsOffer
+      ? ""
+      : productModal.querySelector(".product-modal-note").value.trim();
+    addToCart(
+      modalProduct,
+      modalProductType,
+      quantity,
+      note,
+      modalProductPrice,
+    );
+    productModal.querySelector(".product-modal-quantity").textContent = "1";
+    if (modalProductIsOffer) {
+      updateProductCardQuantity(1);
+    } else {
+      updateMenuCardCartState(true, note);
+      setProductModalCartState(true);
+    }
+  } else if (event.target.closest('[data-modal-action="remove"]')) {
+    const note = productModal.querySelector(".product-modal-note").value.trim();
+    set(
+      get().filter(
+        (item) =>
+          !(item.id == modalProduct.id && item.type == modalProductType),
+      ),
+    );
+    updateMenuCardCartState(false, note);
+    setProductModalCartState(false);
+    toast("تمت الإزالة من السلة");
+  } else if (event.target.closest("[data-product-modal-close]")) {
+    closeProductModal();
+  }
+});
+productModal.addEventListener("input", (event) => {
+  if (event.target.matches(".product-modal-note")) {
+    const cardNote =
+      productModalOpener && productModalOpener.querySelector("input");
+    if (cardNote) cardNote.value = event.target.value;
+  }
+});
+productLightbox.addEventListener("click", (event) => {
+  if (
+    event.target === productLightbox ||
+    event.target.closest(".product-lightbox-close")
+  )
+    closeProductLightbox();
+});
+document.addEventListener("click", (event) => {
+  const card = event.target.closest(".card[data-product-card]");
+  if (card && !event.target.closest("button, input, textarea, select, a"))
+    openProductModal(card);
+});
+document.addEventListener("keydown", (event) => {
+  if (productLightbox.classList.contains("is-open")) {
+    if (event.key === "Escape") closeProductLightbox();
+    else keepFocusInside(event, productLightbox);
+    return;
+  }
+  if (productModal.classList.contains("is-open")) {
+    if (event.key === "Escape") closeProductModal();
+    else keepFocusInside(event, productModal);
+    return;
+  }
+  const card = event.target.closest(".card[data-product-card]");
+  if (
+    card &&
+    (event.key === "Enter" || event.key === " ") &&
+    event.target === card
+  ) {
+    event.preventDefault();
+    openProductModal(card);
+  }
+});
 const get = () => JSON.parse(localStorage.getItem("qc") || "[]"),
   set = (c) => {
     localStorage.setItem("qc", JSON.stringify(c));
@@ -157,7 +422,7 @@ function menu(type) {
           categoryProducts
             .map(
               (product, i) =>
-                `<article class="card" data-id="${product.id}" style="animation-delay:${i * 0.1}s"><img src="${img(product.image)}" alt="${product.name}" loading="lazy"><div class="bd"><h3>${product.name}</h3><p>${product.description}</p><div class="row"><span class="price">${product.price} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
+                `<article class="card" data-product-card data-product-type="${type}" data-id="${product.id}" tabindex="0" role="group" aria-label="تفاصيل ${escapeHtml(product.name)}" aria-haspopup="dialog" style="animation-delay:${i * 0.1}s"><img src="${img(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy"><div class="bd"><h3>${escapeHtml(product.name)}</h3><p>${escapeHtml(product.description)}</p><div class="row"><span class="price">${product.price} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
             )
             .join("") +
           "</div></section>"
@@ -229,7 +494,7 @@ function offers() {
     items
       .map(({ product: x, price, type }, i) => {
         const discount = Math.round(((x.price - price) / x.price) * 100);
-        return `<article class="card offer-card" data-id="${x.id}" data-price="${price}" style="animation-delay:${i * 0.08}s"><div class="offer-image"><img src="${img(x.image)}" alt="${x.name}" loading="lazy"><span class="offer-tag">خصم ${discount}٪</span></div><div class="bd"><span class="offer-type">${type == "restaurant" ? "🍽 من المطعم" : "☕ من الكافيه"}</span><h3>${x.name}</h3><p>${x.description}</p><div class="row"><div class="offer-prices"><del>${x.price} ج.م</del><span class="price">${price} ج.م</span></div><div class="q"><button data-a="-" aria-label="تقليل الكمية">−</button><b>1</b><button data-a="+" aria-label="زيادة الكمية">+</button></div></div><button class="btn" data-a="add">أضف للسلة</button></div></article>`;
+        return `<article class="card offer-card" data-product-card data-product-type="${type}" data-id="${x.id}" data-price="${price}" tabindex="0" role="group" aria-label="تفاصيل ${escapeHtml(x.name)}" aria-haspopup="dialog" style="animation-delay:${i * 0.08}s"><div class="offer-image"><img src="${img(x.image)}" alt="${escapeHtml(x.name)}" loading="lazy"><span class="offer-tag">خصم ${discount}٪</span></div><div class="bd"><span class="offer-type">${type == "restaurant" ? "🍽 من المطعم" : "☕ من الكافيه"}</span><h3>${escapeHtml(x.name)}</h3><p>${escapeHtml(x.description)}</p><div class="row"><div class="offer-prices"><del>${x.price} ج.م</del><span class="price">${price} ج.م</span></div><div class="q"><button data-a="-" aria-label="تقليل الكمية">−</button><b>1</b><button data-a="+" aria-label="زيادة الكمية">+</button></div></div><button class="btn" data-a="add">أضف للسلة</button></div></article>`;
       })
       .join("") +
     "</div>";
