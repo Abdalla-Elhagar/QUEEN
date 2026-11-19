@@ -1568,10 +1568,10 @@ footer.site-footer::before {
 }
 @keyframes category-marquee-right {
   from {
-    transform: translateX(0);
+    transform: translateX(var(--category-loop-offset, -50%));
   }
   to {
-    transform: translateX(var(--category-loop-offset, -50%));
+    transform: translateX(0);
   }
 }
 @keyframes up {
