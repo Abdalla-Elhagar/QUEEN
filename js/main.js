@@ -426,6 +426,19 @@ function menu(type) {
   let searchQuery = "";
   let categoryLayoutFrame = 0;
   let lastCategoryLayoutKey = "";
+  let categoryGroupWidth = 0;
+  let categoryOffset = 0;
+  // بيرجّع الـ offset لنطاق (-عرض_المجموعة .. 0] عشان الـ loop لا نهائي في الاتجاهين
+  function wrapCategoryOffset(value) {
+    if (!categoryGroupWidth) return 0;
+    const m =
+      ((-value % categoryGroupWidth) + categoryGroupWidth) % categoryGroupWidth;
+    return m === 0 ? 0 : -m;
+  }
+  function renderCategoryOffset() {
+    if (!categoryMarqueeTrack) return;
+    categoryMarqueeTrack.style.transform = `translate3d(${categoryOffset}px, 0, 0)`;
+  }
   function updateCategoryLayout() {
     if (!categoryTabs || !categoryFilter || !categoryScrollArea) return;
     categoryFilter.classList.add("has-overflow");
@@ -467,20 +480,9 @@ function menu(type) {
       });
       categoryMarqueeTrack.append(copy);
     }
-    // الحركة بمقدار مجموعة واحدة بالظبط بالبكسل (مش نسبة) عشان الـ loop يكمل بدون نطة
-    categoryMarqueeTrack.style.setProperty(
-      "--category-loop-offset",
-      `${-groupWidth}px`,
-    );
-    const duration = Math.max(12, Math.ceil(groupWidth / 50));
-    categoryMarqueeTrack.style.setProperty(
-      "--category-loop-duration",
-      `${duration}s`,
-    );
-    categoryMarqueeTrack.style.setProperty(
-      "--marquee-duration",
-      `${duration}s`,
-    );
+    categoryGroupWidth = groupWidth;
+    categoryOffset = wrapCategoryOffset(categoryOffset);
+    renderCategoryOffset();
   }
   function show(n = activeCategory) {
     activeCategory = n;
@@ -548,20 +550,99 @@ function menu(type) {
       window.cancelAnimationFrame(categoryLayoutFrame);
       categoryLayoutFrame = window.requestAnimationFrame(updateCategoryLayout);
     };
-    if (categoryMarqueeTrack) {
-      categoryMarqueeTrack.addEventListener(
-        "touchstart",
-        () => {
-          categoryMarqueeTrack.classList.add("is-touch-paused");
-        },
-        { passive: true },
+    if (categoryMarqueeTrack && categoryScrollArea) {
+      const AUTO_SPEED = 50; // بكسل/ثانية، اتجاه الحركة التلقائية ناحية الشمال
+      const DRAG_THRESHOLD = 6; // أقل مسافة تعتبر سحب وليست ضغطة
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
       );
-      categoryMarqueeTrack.addEventListener("touchend", () => {
-        categoryMarqueeTrack.classList.remove("is-touch-paused");
+      let hovering = false;
+      let pressed = false;
+      let dragging = false;
+      let suppressClick = false;
+      let pointerId = null;
+      let startX = 0;
+      let startOffset = 0;
+      let lastTime = 0;
+
+      // الحركة التلقائية: بتقف مع الماوس فوق الشريط، أثناء الضغط/السحب، أو مع التركيز بالكيبورد
+      const tick = (time) => {
+        const dt = Math.min((time - (lastTime || time)) / 1000, 0.1);
+        lastTime = time;
+        if (
+          !reduceMotion.matches &&
+          !hovering &&
+          !pressed &&
+          !categoryMarqueeTrack.matches(":focus-within")
+        ) {
+          categoryOffset = wrapCategoryOffset(categoryOffset - AUTO_SPEED * dt);
+          renderCategoryOffset();
+        }
+        window.requestAnimationFrame(tick);
+      };
+      window.requestAnimationFrame(tick);
+
+      categoryScrollArea.addEventListener("pointerenter", (e) => {
+        if (e.pointerType === "mouse") hovering = true;
       });
-      categoryMarqueeTrack.addEventListener("touchcancel", () => {
-        categoryMarqueeTrack.classList.remove("is-touch-paused");
+      categoryScrollArea.addEventListener("pointerleave", (e) => {
+        if (e.pointerType === "mouse") hovering = false;
       });
+
+      categoryScrollArea.addEventListener("pointerdown", (e) => {
+        if (reduceMotion.matches) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        pressed = true;
+        dragging = false;
+        suppressClick = false;
+        pointerId = e.pointerId;
+        startX = e.clientX;
+        startOffset = categoryOffset;
+      });
+
+      categoryScrollArea.addEventListener("pointermove", (e) => {
+        if (!pressed || e.pointerId !== pointerId) return;
+        const dx = e.clientX - startX;
+        if (!dragging) {
+          if (Math.abs(dx) < DRAG_THRESHOLD) return;
+          dragging = true;
+          categoryScrollArea.classList.add("is-dragging");
+          try {
+            categoryScrollArea.setPointerCapture(pointerId);
+          } catch (err) {}
+        }
+        // السحب يمين = الشريط يتحرك يمين، والعكس
+        categoryOffset = wrapCategoryOffset(startOffset + dx);
+        renderCategoryOffset();
+      });
+
+      const endDrag = (e) => {
+        if (!pressed || (e && e.pointerId !== pointerId)) return;
+        pressed = false;
+        if (dragging) {
+          dragging = false;
+          // نمنع الـ click اللي بيجي بعد السحب عشان ما يفتحش كاتيجوري بالغلط
+          suppressClick = true;
+          window.setTimeout(() => {
+            suppressClick = false;
+          }, 50);
+          categoryScrollArea.classList.remove("is-dragging");
+        }
+      };
+      categoryScrollArea.addEventListener("pointerup", endDrag);
+      categoryScrollArea.addEventListener("pointercancel", endDrag);
+      categoryScrollArea.addEventListener("lostpointercapture", endDrag);
+
+      categoryFilter.addEventListener(
+        "click",
+        (e) => {
+          if (suppressClick) {
+            e.stopPropagation();
+            e.preventDefault();
+          }
+        },
+        true,
+      );
     }
     window.addEventListener("resize", scheduleCategoryLayout);
     if ("ResizeObserver" in window && categoryScrollArea) {

@@ -576,6 +576,14 @@ body[data-page="cafe"] {
   overflow: hidden;
   contain: paint;
   direction: ltr; /* الـ track يبدأ من الشمال ويتحرك صح حتى في صفحة RTL */
+  cursor: grab;
+  touch-action: pan-y; /* السحب الأفقي للشريط، والسحب الرأسي يفضل يسكرول الصفحة */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.category-scroll-area.is-dragging,
+.category-scroll-area.is-dragging button {
+  cursor: grabbing;
 }
 .category-marquee-track {
   width: 100%;
@@ -640,8 +648,6 @@ body[data-page="cafe"] {
   gap: 0;
   width: max-content;
   direction: ltr;
-  animation: category-marquee-right
-    var(--marquee-duration, var(--category-loop-duration, 28s)) linear infinite;
   will-change: transform;
 }
 .category-filter.has-overflow .category-marquee-track .category-tabs,
@@ -1623,6 +1629,12 @@ footer.site-footer::before {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .category-scroll-area {
+    cursor: auto;
+    touch-action: auto;
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
   .category-filter.has-overflow .category-marquee-track {
     display: block;
     width: 100%;
