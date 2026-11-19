@@ -13,8 +13,20 @@
 
 <body data-page="cafe">
   <div id="particles-bg" aria-hidden="true"></div>
-  <main class="wrap">
-    <nav class="category-tabs" id="categories" aria-label="أقسام الكافيه"></nav>
+  <main class="wrap menu-page">
+    <div class="menu-toolbar">
+      <label class="menu-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+        <input id="product-search" type="search" aria-label="ابحث عن منتج" placeholder="ابحث عن منتج أو وصف..." autocomplete="off" />
+      </label>
+      <div class="category-filter" id="category-filter">
+        <div class="category-scroll-area">
+          <div class="category-marquee-track">
+            <nav class="category-tabs" id="categories" aria-label="أقسام الكافيه"></nav>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="menu"></div>
   </main>
   <script src="data/catalog.js"></script>

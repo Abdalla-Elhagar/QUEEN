@@ -398,8 +398,14 @@ function menu(type) {
     products = PRODUCTS,
     sb = $("#side"),
     categoryTabs = $("#categories"),
+    searchInput = $("#product-search"),
+    categoryFilter = $("#category-filter"),
     mn = $("#menu");
   const categoryNav = categoryTabs || sb;
+  const categoryMarqueeTrack =
+    categoryFilter && categoryFilter.querySelector(".category-marquee-track");
+  const categoryScrollArea =
+    categoryFilter && categoryFilter.querySelector(".category-scroll-area");
   categoryNav.innerHTML =
     (categoryTabs
       ? `<button data-n="all"><span>✦</span><b>الكل</b></button>`
@@ -410,18 +416,94 @@ function menu(type) {
           `<button data-n="${n}"><span>${c.icon}</span><b>${c.name}</b></button>`,
       )
       .join("");
-  function show(n) {
+  if (categoryTabs && categoryMarqueeTrack) {
+    categoryMarqueeTrack
+      .querySelectorAll(".category-tabs-copy")
+      .forEach((copy) => copy.remove());
+    categoryTabs.setAttribute("dir", "rtl");
+  }
+  let activeCategory = categoryTabs ? "all" : "0";
+  let searchQuery = "";
+  let categoryLayoutFrame = 0;
+  let lastCategoryLayoutKey = "";
+  function updateCategoryLayout() {
+    if (!categoryTabs || !categoryFilter || !categoryScrollArea) return;
+    categoryFilter.classList.add("has-overflow");
+    categoryTabs.classList.remove("is-centered");
+    if (!categoryMarqueeTrack) return;
+
+    // قياس دقيق (بالكسور) لمجموعة واحدة، من غير ما نعتمد على النسخ المكررة
+    const viewportWidth = categoryScrollArea.clientWidth;
+    const groupWidth = categoryTabs.getBoundingClientRect().width;
+    if (!viewportWidth || !groupWidth) return;
+
+    // عدد النسخ: عرضها كله لازم يغطي الشاشة + مجموعة واحدة (اللي بتتحرك)
+    const repeatCount = Math.max(
+      6,
+      Math.ceil((viewportWidth * 2) / groupWidth) + 1,
+    );
+    const existingCopies = categoryMarqueeTrack.querySelectorAll(
+      ".category-tabs-copy",
+    );
+    const key = `${viewportWidth}|${groupWidth}|${repeatCount}`;
+    // لو مفيش تغيير فعلي، متعيدش بناء النسخ (بيمنع الرعشة عند كل ضغطة/بحث)
+    if (
+      key === lastCategoryLayoutKey &&
+      existingCopies.length === repeatCount - 1
+    )
+      return;
+    lastCategoryLayoutKey = key;
+
+    existingCopies.forEach((copy) => copy.remove());
+    for (let copyIndex = 1; copyIndex < repeatCount; copyIndex++) {
+      const copy = categoryTabs.cloneNode(true);
+      copy.removeAttribute("id");
+      copy.classList.remove("is-centered");
+      copy.classList.add("category-tabs-copy");
+      copy.setAttribute("aria-hidden", "true");
+      copy.setAttribute("dir", "rtl");
+      copy.querySelectorAll("button").forEach((button) => {
+        button.setAttribute("tabindex", "-1");
+      });
+      categoryMarqueeTrack.append(copy);
+    }
+    // الحركة بمقدار مجموعة واحدة بالظبط بالبكسل (مش نسبة) عشان الـ loop يكمل بدون نطة
+    categoryMarqueeTrack.style.setProperty(
+      "--category-loop-offset",
+      `${-groupWidth}px`,
+    );
+    const duration = Math.max(12, Math.ceil(groupWidth / 50));
+    categoryMarqueeTrack.style.setProperty(
+      "--category-loop-duration",
+      `${duration}s`,
+    );
+    categoryMarqueeTrack.style.setProperty(
+      "--marquee-duration",
+      `${duration}s`,
+    );
+  }
+  function show(n = activeCategory) {
+    activeCategory = n;
     const selectedCategories = n === "all" ? cats : [cats[Number(n)]];
-    categoryNav.querySelectorAll("button").forEach((button) => {
-      const active = button.dataset.n === String(n);
-      button.classList.toggle("on", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
-    mn.innerHTML = selectedCategories
+    const normalizedQuery = searchQuery.toLowerCase();
+    (categoryFilter || categoryNav)
+      .querySelectorAll(".category-tabs button")
+      .forEach((button) => {
+        const active = button.dataset.n === String(n);
+        button.classList.toggle("on", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    const sections = selectedCategories
       .map((category) => {
-        const categoryProducts = products.filter(
-          (product) => product.categoryId == category.id,
-        );
+        const categoryProducts = products.filter((product) => {
+          const matchesQuery =
+            !normalizedQuery ||
+            `${product.name} ${product.description} ${category.name}`
+              .toLowerCase()
+              .includes(normalizedQuery);
+          return product.categoryId == category.id && matchesQuery;
+        });
+        if (!categoryProducts.length) return "";
         return (
           `<section class="menu-section"><h2 class="ttl">${category.icon} ${category.name}</h2><div class="grid">` +
           categoryProducts
@@ -434,6 +516,9 @@ function menu(type) {
         );
       })
       .join("");
+    mn.innerHTML =
+      sections ||
+      `<p class="menu-empty" role="status">${normalizedQuery ? "لا توجد منتجات مطابقة للبحث" : "لا توجد منتجات في هذا القسم"}</p>`;
     mn.querySelectorAll(".card").forEach((card) => {
       const cartItem = get().find(
         (item) => item.id == card.dataset.id && item.type == type,
@@ -447,11 +532,45 @@ function menu(type) {
         button.textContent = "إزالة من السلة";
       }
     });
+    updateCategoryLayout();
   }
-  categoryNav.onclick = (e) => {
+  (categoryFilter || categoryNav).addEventListener("click", (e) => {
     const b = e.target.closest("button");
-    if (b) show(b.dataset.n);
-  };
+    if (b && (b.closest(".category-tabs") || !categoryTabs)) show(b.dataset.n);
+  });
+  if (searchInput)
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value.trim();
+      show();
+    });
+  if (categoryTabs) {
+    const scheduleCategoryLayout = () => {
+      window.cancelAnimationFrame(categoryLayoutFrame);
+      categoryLayoutFrame = window.requestAnimationFrame(updateCategoryLayout);
+    };
+    if (categoryMarqueeTrack) {
+      categoryMarqueeTrack.addEventListener(
+        "touchstart",
+        () => {
+          categoryMarqueeTrack.classList.add("is-touch-paused");
+        },
+        { passive: true },
+      );
+      categoryMarqueeTrack.addEventListener("touchend", () => {
+        categoryMarqueeTrack.classList.remove("is-touch-paused");
+      });
+      categoryMarqueeTrack.addEventListener("touchcancel", () => {
+        categoryMarqueeTrack.classList.remove("is-touch-paused");
+      });
+    }
+    window.addEventListener("resize", scheduleCategoryLayout);
+    if ("ResizeObserver" in window && categoryScrollArea) {
+      const categoryResizeObserver = new ResizeObserver(scheduleCategoryLayout);
+      categoryResizeObserver.observe(categoryScrollArea);
+    }
+  }
+  if (document.fonts && document.fonts.ready)
+    document.fonts.ready.then(updateCategoryLayout);
   mn.onclick = (e) => {
     const a = e.target.dataset.a,
       cd = e.target.closest(".card");
@@ -485,7 +604,7 @@ function menu(type) {
       button.textContent = "إزالة من السلة";
     }
   };
-  show(categoryTabs ? "all" : "0");
+  show(activeCategory);
 }
 function offers() {
   const items = OFFERS.map((offer) => {
