@@ -23,12 +23,6 @@ const OFFERS = [
       ],
     },
     offerPrice: 100,
-    images: [
-      "img/productsImg/ju6.jpeg",
-      "img/productsImg/des2.jpeg",
-      "img/productsImg/waffel1.jpeg",
-      "img/productsImg/ban2.jpeg",
-    ],
     buttonText: "أضف العرض للسلة",
     validDay: 1,
     endsAt: "01:00",
@@ -61,7 +55,6 @@ const OFFERS = [
     },
     offerPrice: 30,
     priceFrom: true,
-    images: ["images/offers/sandwiches.jpg"],
     buttonText: "أضف العرض للسلة",
     validDay: 1,
     endsAt: "01:00",
@@ -93,12 +86,11 @@ const OFFERS = [
     id: "chicken-pasta",
     title: "باستا دجاج",
     description: "باستا بصوص الكريمة والدجاج",
-    items: [{ productId: "chicken-pasta", qty: 1 }], // TODO
+    items: [{ productId: "pasta-chicken", qty: 1 }],
     options: [
       { label: "عادي", price: 50 },
       { label: "كبير", price: 60 },
     ],
-    images: ["images/offers/pasta.jpg"],
     buttonText: "أضف العرض للسلة",
     validDay: 1,
     endsAt: "01:00",
@@ -108,12 +100,11 @@ const OFFERS = [
     id: "chicken-ranch-pizza",
     title: "بيتزا تشيكن رانش",
     description: "بيتزا بالدجاج وصوص الرانش",
-    items: [{ productId: "chicken-ranch-pizza", qty: 1 }], // TODO
+    items: [{ productId: "pizza-chicken-ranch", qty: 1 }],
     options: [
       { label: "وسط", price: 120 },
       { label: "كبير", price: 140 },
     ],
-    images: ["images/offers/pizza.jpg"],
     buttonText: "أضف العرض للسلة",
     validDay: 1,
     endsAt: "01:00",
