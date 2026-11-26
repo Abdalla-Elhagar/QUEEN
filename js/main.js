@@ -739,7 +739,9 @@ function menu(type) {
       };
       categoryScrollArea.addEventListener("pointerup", endDrag);
       categoryScrollArea.addEventListener("pointercancel", endDrag);
-      categoryScrollArea.addEventListener("lostpointercapture", endDrag);
+      categoryScrollArea.addEventListener("lostpointercapture", (e) => {
+        if (e.target === categoryScrollArea) endDrag(e);
+      });
 
       categoryFilter.addEventListener(
         "click",
