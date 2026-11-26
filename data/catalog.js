@@ -192,10 +192,18 @@ const QUEEN_PRODUCTS = [
     categoryId: "cafe-4",
   },
   {
+    id: "guava-juice",
+    name: "عصير جوافة",
+    description: "عصير جوافة طازج ومنعش",
+    price: 50,
+    image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=800&q=80",
+    categoryId: "cafe-2",
+  },
+  {
     id: "c8",
     name: "مولتين كيك نوتيلا",
     description: "كيك شوكولاتة دافئ بقلب نوتيلا سايح",
-    price: 95,
+    price: 100,
     image: "img/productsImg/des2.jpeg",
     categoryId: "cafe-3",
   },
@@ -260,28 +268,28 @@ const QUEEN_PRODUCTS = [
 ];
 
 const QUEEN_OFFERS = [
-  {
-    id: "r1",
-    price: 299,
-  },
-  {
-    id: "r4",
-    price: 130,
-  },
-  {
-    id: "r7",
-    price: 115,
-  },
-  {
-    id: "c8",
-    price: 60,
-  },
-  {
-    id: "c16",
-    price: 68,
-  },
-  {
-    id: "c18",
-    price: 88,
-  },
+  // {
+  //   id: "r1",
+  //   price: 299,
+  // },
+  // {
+  //   id: "r4",
+  //   price: 130,
+  // },
+  // {
+  //   id: "r7",
+  //   price: 115,
+  // },
+  // {
+  //   id: "c8",
+  //   price: 60,
+  // },
+  // {
+  //   id: "c16",
+  //   price: 68,
+  // },
+  // {
+  //   id: "c18",
+  //   price: 88,
+  // },
 ];
