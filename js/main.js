@@ -826,7 +826,6 @@ function offers() {
   const bundleOffers = resolveBundleOffers();
   const mn = $("#offers");
   mn.innerHTML =
-    `<section class="offers-hero"><span class="offers-spark" aria-hidden="true">✦</span><div><span class="offers-kicker">اختيارات Queen الخاصة</span><h1>العروض والفعاليات</h1><p>عروض مميزة وفعاليات تجمعنا على أحلى الأوقات.</p></div><span class="offers-seal" aria-hidden="true">عروض<br>وفعاليات</span></section>` +
     eventsSectionMarkup() +
     `<div class="offers-grid">` +
     items
