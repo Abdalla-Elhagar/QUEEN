@@ -37,7 +37,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 60 },
       { id: "l", label: "كبير", price: 80 },
     ],
-      image: "img/productsImg/ju3.jpeg",
+      image: "img/productsImg/pasta1.jpg",
     categoryId: "restaurant-3",
   },
   {
@@ -48,8 +48,8 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 60 },
       { id: "l", label: "كبير", price: 80 },
     ],
-    image: "",
-    categoryId: "restaurant-3",
+  image: "img/productsImg/pasta2.jpg",
+      categoryId: "restaurant-3",
   },
   {
     id: "pasta-hotdog",
@@ -59,7 +59,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 60 },
       { id: "l", label: "كبير", price: 80 },
     ],
-    image: "",
+  image: "img/productsImg/pasta3.jpg",
     categoryId: "restaurant-3",
   },
   {
@@ -70,22 +70,12 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 70 },
       { id: "l", label: "كبير", price: 90 },
     ],
-    image: "",
+ image: "img/productsImg/pasta4.jpg", 
     categoryId: "restaurant-3",
   },
   // TODO: باستا جمبري - السعر مطموس في المنيو
   // TODO: باستا سي فود - السعر مطموس في المنيو
-  {
-    id: "pasta-mushroom",
-    name: "باستا مشروم",
-    price: 60,
-    sizes: [
-      { id: "m", label: "وسط", price: 60 },
-      { id: "l", label: "كبير", price: 70 },
-    ],
-    image: "",
-    categoryId: "restaurant-3",
-  },
+
   {
     id: "pasta-sausage",
     name: "باستا سوسيس",
@@ -94,18 +84,18 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 70 },
       { id: "l", label: "كبير", price: 80 },
     ],
-    image: "",
+  image: "img/productsImg/pasta5.jpg",
     categoryId: "restaurant-3",
   },
   {
     id: "pasta-plain",
-    name: "باستا سادة",
+    name: "باستا جمبري",
     price: 50,
     sizes: [
       { id: "m", label: "وسط", price: 50 },
       { id: "l", label: "كبير", price: 60 },
     ],
-    image: "",
+  image: "img/productsImg/pasta6.jpg",
     categoryId: "restaurant-3",
   },
 
@@ -118,7 +108,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 120 },
       { id: "l", label: "كبير", price: 140 },
     ],
-    image: "",
+  image: "img/productsImg/piz1.jpeg",
     categoryId: "restaurant-3",
   },
   {
