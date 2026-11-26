@@ -1,6 +1,6 @@
 // لإضافة عرض: انسخ كائنًا من OFFERS وعدّل id والعنوان والوصف وعناصر items.
 // استخدم productId كما هو في data/catalog.js، وحدد qty لكل منتج؛ السعر الأصلي والخصم يُحسبان تلقائيًا من الكتالوج.
-// offerPrice هو سعر العرض، وimages صور المنتجات بالترتيب (ضعها في images/offers/)، وbuttonText نص الزر.
+// offerPrice هو سعر العرض، وimages صور المنتجات بالترتيب، وbuttonText نص الزر.
 // choices: لو العميل يختار منتجًا من قائمة (label عنوان الاختيار، pick عدد الاختيارات، options المنتجات).
 // options: لو العرض له أحجام بأسعار مختلفة (label + price)، وفي هذه الحالة يُتجاهل offerPrice.
 // priceFrom: true يعرض "يبدأ من" قبل السعر.
@@ -12,22 +12,22 @@ const OFFERS = [
     id: "guava-combo",
     title: "عصير جوافة + اختيارك",
     description: "عصير جوافة + اختيارك من مولتن كيك أو وافل أو 15 قطعة بان كيك",
-    items: [{ productId: "guava-juice", qty: 1 }], // TODO: تأكد من الـ id في catalog.js
+    items: [{ productId: "guava-juice", qty: 1 }],
     choices: {
       label: "اختر الحلو",
       pick: 1,
       options: [
         { productId: "c8", label: "مولتن كيك" },
         { productId: "c9", label: "وافل" },
-        { productId: "pancake-15", label: "15 قطعة بان كيك" }, // TODO: الـ id الصحيح
+        { productId: "pan01", label: "15 قطعة بان كيك" },
       ],
     },
     offerPrice: 100,
     images: [
-      "images/offers/guava-juice.jpg",
-      "images/offers/molten-cake.jpg",
-      "images/offers/waffle.jpg",
-      "images/offers/pancake.jpg",
+      "img/productsImg/ju6.jpeg",
+      "img/productsImg/des2.jpeg",
+      "img/productsImg/waffel1.jpeg",
+      "img/productsImg/ban2.jpeg",
     ],
     buttonText: "أضف العرض للسلة",
     validDay: 1,
@@ -68,12 +68,22 @@ const OFFERS = [
     active: true,
   },
   {
-    id: "nutella-ginger-crepe",
-    title: "كريب نوتيلا وزنجر",
-    description: "كريب بالنوتيلا والموز",
-    items: [{ productId: "nutella-crepe", qty: 1 }], // TODO
+    id: "nutella-crepe",
+    title: "كريب نوتيلا",
+    description: "كريب شكولاتة نوتيلا",
+    items: [{ productId: "crepe-nutella", qty: 1 }],
     offerPrice: 50,
-    images: ["images/offers/crepe.jpg"],
+    buttonText: "أضف العرض للسلة",
+    validDay: 1,
+    endsAt: "01:00",
+    active: true,
+  },
+  {
+    id: "zinger-crepe",
+    title: "كريب زنجر",
+    description: "كريب زنجر بالدجاج",
+    items: [{ productId: "crepe-zinger", qty: 1 }],
+    offerPrice: 50,
     buttonText: "أضف العرض للسلة",
     validDay: 1,
     endsAt: "01:00",
