@@ -19,12 +19,12 @@ const QUEEN_CATEGORIES = [
   { id: "cafe-3", type: "cafe", name: "ديزيرت", icon: "" },
   { id: "cafe-4", type: "cafe", name: "فريش وسموزي", icon: "" },
   { id: "cafe-5", type: "cafe", name: "ميلك شيك", icon: "" },
-  { id: "cafe-6", type: "cafe", name: "ايس كريم", icon: "" },
+  // { id: "cafe-6", type: "cafe", name: "ايس كريم", icon: "" },
   { id: "cafe-7", type: "cafe", name: "صودا وموهيتو", icon: "" },
-  { id: "cafe-8", type: "cafe", name: "فرابيه", icon: "" },
+  // { id: "cafe-8", type: "cafe", name: "فرابيه", icon: "" },
   { id: "cafe-9", type: "cafe", name: "وافل", icon: "" },
   { id: "cafe-10", type: "cafe", name: "بان كيك", icon: "" },
-  { id: "cafe-11", type: "cafe", name: "مادنس", icon: "" },
+  // { id: "cafe-11", type: "cafe", name: "مادنس", icon: "" },
 ];
 
 const QUEEN_PRODUCTS = [
@@ -980,7 +980,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c7",
     name: "شوكليت كيك",
-    description: "كيك شوكولاتة بطبقات طرية ونكهة كاكاو غنية",
+    description: "",
     price: 85,
     image: "img/productsImg/des1.jpeg",
     categoryId: "cafe-3",
@@ -995,7 +995,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c17",
     name: "تشيز كيك إسبشيال",
-    description: "تشيز كيك كريمي بقوام ناعم ونكهة غنية",
+    description: "",
     price: 95,
     image: "img/productsImg/des3.jpeg",
     categoryId: "cafe-3",
@@ -1010,7 +1010,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c8",
     name: "مولتن نوتيلا",
-    description: "كيك شوكولاتة دافئ بقلب نوتيلا سايح",
+    description: "",
     price: 110,
     image: "img/productsImg/des2.jpeg",
     categoryId: "cafe-3",
@@ -1046,7 +1046,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c14",
     name: "ريد فيلفت",
-    description: "كيك ريد فيلفت بطبقات مخملية ونكهة كاكاو مميزة",
+    description: "",
     price: 90,
     image: "img/productsImg/des5.jpeg",
     categoryId: "cafe-3",
@@ -1054,7 +1054,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c15",
     name: "براونيز",
-    description: "براونيز شوكولاتة بقوام كثيف وقطعة طرية",
+    description: "",
     price: 85,
     image: "img/productsImg/des6.jpeg",
     categoryId: "cafe-3",
@@ -1069,7 +1069,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c13",
     name: "سينابون إسبشيال",
-    description: "رول سينابون طري بنكهة القرفة ولمسة من الصوص الغني",
+    description: "",
     price: 100,
     image: "img/productsImg/des4.jpeg",
     categoryId: "cafe-3",
@@ -1087,7 +1087,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c9",
     name: "وافل نوتيلا",
-    description: "وافل ذهبي مقرمش مغطى بصوص نوتيلا الغني",
+    description: "",
     price: 100,
     image: "img/productsImg/waffel1.jpeg",
     categoryId: "cafe-9",
@@ -1109,7 +1109,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c10",
     name: "وافل ميكس صوص",
-    description: "وافل طازج مقرمش مع تشكيلة من الصوصات",
+    description: "",
     price: 120,
     image: "img/productsImg/waffel2.jpeg",
     categoryId: "cafe-9",
@@ -1176,7 +1176,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c18",
     name: "بان كيك ميكس صوص",
-    description: "بان كيك طري وشهي مع تشكيلة من الصوصات",
+    description: "",
     price: 110,
     sizeLabel: "عدد القطع",
     sizes: [
@@ -1191,7 +1191,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "c16",
     name: "عصير مانجو - كوب",
-    description: "سموزي مانجو بارد بقوام ناعم وطعم فاكهي منعش",
+    description: "",
     price: 60,
     image: "img/productsImg/ju1.jpeg",
     categoryId: "cafe-4",
@@ -1220,7 +1220,7 @@ const QUEEN_PRODUCTS = [
   {
     id: "guava-juice",
     name: "عصير جوافة - كوب",
-    description: "عصير جوافة طازج ومنعش",
+    description: "",
     price: 50,
     image: "img/productsImg/ju6.jpeg",
     categoryId: "cafe-4",
