@@ -1018,7 +1018,7 @@ function bundleOfferSliderMarkup(offers) {
                       offer.choiceOptions[
                         imageIndex - offer.items.length
                       ].label;
-                    return `<div class="offer-slide-image"><img src="${escapeHtml(img(source))}" alt="${escapeHtml(itemName || choiceName || offer.title)}" loading="${index ? "lazy" : "eager"}"><span class="offer-slide-image-fallback" aria-hidden="true" hidden>✦</span></div>${
+                    return `<div class="offer-slide-image"><img src="${escapeHtml(img(source))}" alt="${escapeHtml(itemName || choiceName || offer.title)}" loading="${index ? "lazy" : "eager"}" draggable="false"><span class="offer-slide-image-fallback" aria-hidden="true" hidden>✦</span></div>${
                       imageIndex < imageSources.length - 1
                         ? '<span class="offer-slide-plus" aria-hidden="true">+</span>'
                         : ""
