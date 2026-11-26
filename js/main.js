@@ -1135,6 +1135,10 @@ function initBundleOfferSlider(container, offers) {
   );
   let currentIndex = 0;
   let pointerStartX = null;
+  let pointerStartY = null;
+  let pointerId = null;
+  let dragging = false;
+  let suppressClick = false;
   let autoplay;
   const getSlide = (offer) =>
     slides.find((slide) => slide.dataset.offerSlide === offer.id);
@@ -1211,7 +1215,7 @@ function initBundleOfferSlider(container, offers) {
   };
   const showSlide = (index) => {
     currentIndex = (index + slides.length) % slides.length;
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    track.style.transform = `translateX(${currentIndex * 100}%)`;
     slides.forEach((slide, slideIndex) => {
       slide.setAttribute("aria-hidden", String(slideIndex !== currentIndex));
       slide.inert = slideIndex !== currentIndex;
@@ -1335,26 +1339,69 @@ function initBundleOfferSlider(container, offers) {
     }
   });
   slider.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") showSlide(currentIndex + 1);
-    else if (event.key === "ArrowRight") showSlide(currentIndex - 1);
+    if (event.key === "ArrowRight") showSlide(currentIndex + 1);
+    else if (event.key === "ArrowLeft") showSlide(currentIndex - 1);
     else return;
     event.preventDefault();
     stopAutoplay();
   });
+  const resetPointerDrag = (event) => {
+    if (event && pointerId !== null && event.pointerId !== pointerId) return;
+    pointerStartX = null;
+    pointerStartY = null;
+    pointerId = null;
+    dragging = false;
+    slider.classList.remove("is-dragging");
+  };
   slider.addEventListener("pointerdown", (event) => {
+    if (
+      pointerId !== null ||
+      (event.pointerType === "mouse" && event.button !== 0)
+    )
+      return;
     stopAutoplay();
-    pointerStartX = event.pointerType === "touch" ? event.clientX : null;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
+    pointerId = event.pointerId;
   });
-  slider.addEventListener("pointerup", (event) => {
-    if (pointerStartX === null) return;
+  window.addEventListener("pointermove", (event) => {
+    if (event.pointerId !== pointerId || pointerStartX === null) return;
+    const distanceX = event.clientX - pointerStartX;
+    const distanceY = event.clientY - pointerStartY;
+    if (!dragging) {
+      if (Math.abs(distanceX) < 45 || Math.abs(distanceX) <= Math.abs(distanceY))
+        return;
+      dragging = true;
+      slider.classList.add("is-dragging");
+      slider.setPointerCapture(pointerId);
+    }
+    event.preventDefault();
+  });
+  window.addEventListener("pointerup", (event) => {
+    if (event.pointerId !== pointerId || pointerStartX === null) return;
     const distance = event.clientX - pointerStartX;
-    pointerStartX = null;
-    if (Math.abs(distance) > 45)
-      showSlide(currentIndex + (distance < 0 ? 1 : -1));
+    const wasDragging = dragging;
+    resetPointerDrag();
+    if (!wasDragging) return;
+    showSlide(currentIndex + (distance > 0 ? 1 : -1));
+    suppressClick = true;
+    window.setTimeout(() => {
+      suppressClick = false;
+    }, 50);
   });
-  slider.addEventListener("pointercancel", () => {
-    pointerStartX = null;
+  window.addEventListener("pointercancel", resetPointerDrag);
+  slider.addEventListener("lostpointercapture", (event) => {
+    if (event.pointerId === pointerId) resetPointerDrag();
   });
+  slider.addEventListener(
+    "click",
+    (event) => {
+      if (!suppressClick) return;
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true,
+  );
   slider.addEventListener("mouseenter", stopAutoplay);
   slider.addEventListener("focusin", stopAutoplay);
   slider.addEventListener(
