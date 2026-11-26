@@ -1,7 +1,7 @@
 const WA = "201129352754";
 const INFO = "📍 العنوان هنا · 📞 01129352754 · 🕒 يوميًا 10 ص – 2 ص";
 const SOCIAL_LINKS = {
-  facebook: "https://www.facebook.com/your-page",
+  facebook: "https://www.facebook.com/profile.php?id=61593831756386",
   instagram: "https://www.instagram.com/your-page",
 };
 const U = (i) =>
@@ -417,7 +417,38 @@ if (P !== "home") {
   );
   document.body.insertAdjacentHTML(
     "beforeend",
-    `<footer class="site-footer"><div class="footer-shell"><div class="footer-main"><section class="footer-brand"><a class="footer-wordmark" href="index.html">QUEEN<span>✦</span></a><p>مطعم وكافيه يجمع بين المذاق المميز واللحظات الجميلة.</p><a class="footer-offers-link" href="offers.html">العروض والفعاليات</a><div class="footer-info">${INFO}</div></section><section class="footer-follow"><h2>تابعونا على</h2><p>يسعدنا تواصلكم ومشاركة لحظاتكم معنا</p><div class="footer-socials"><a href="${SOCIAL_LINKS.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z"/></svg></a><a href="${SOCIAL_LINKS.instagram}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="ig-dot" cx="17.7" cy="6.8" r="1"/></svg></a></div></section></div><div class="footer-bottom"><span class="footer-copy">© ${new Date().getFullYear()} Queen · جميع الحقوق محفوظة</span><div class="footer-credit"><span class="credit-mark">RC</span><span><small>تصميم وتطوير</small><strong>Rief Code</strong></span></div></div></div></footer>`,
+    `<footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-main">
+          <section class="footer-brand">
+            <a class="footer-wordmark" href="index.html">QUEEN<span>✦</span></a>
+            <p>مطعم وكافيه يجمع بين المذاق المميز واللحظات الجميلة.</p>
+            <a class="footer-offers-link" href="offers.html">العروض والفعاليات</a>
+            <div class="footer-info">${INFO}</div>
+          </section>
+          <section class="footer-follow">
+            <h2>تابعونا على</h2>
+            <p>يسعدنا تواصلكم ومشاركة لحظاتكم معنا</p>
+            <div class="footer-socials">
+              <a href="${SOCIAL_LINKS.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z"/></svg>
+              </a>
+              <a href="${SOCIAL_LINKS.instagram}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="ig-dot" cx="17.7" cy="6.8" r="1"/></svg>
+              </a>
+            </div>
+          </section>
+        </div>
+        <div class="footer-bottom">
+          <span class="footer-copy">© ${new Date().getFullYear()} Queen · جميع الحقوق محفوظة</span>
+          <a class="footer-credit" href="https://www.facebook.com/profile.php?id=61595437212997" aria-label="Rief Code على فيسبوك" title="Rief Code على فيسبوك">
+            <span class="credit-mark" aria-hidden="true">RC</span>
+            <span><small>تصميم وتطوير</small><strong>Rief Code</strong></span>
+            <span class="credit-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </footer>`,
   );
 }
 count();
@@ -1018,7 +1049,7 @@ function bundleOfferSliderMarkup(offers) {
                       offer.choiceOptions[
                         imageIndex - offer.items.length
                       ].label;
-                    return `<div class="offer-slide-image"><img src="${escapeHtml(img(source))}" alt="${escapeHtml(itemName || choiceName || offer.title)}" loading="${index ? "lazy" : "eager"}"><span class="offer-slide-image-fallback" aria-hidden="true" hidden>✦</span></div>${
+                    return `<div class="offer-slide-image"><img src="${escapeHtml(img(source))}" alt="${escapeHtml(itemName || choiceName || offer.title)}" loading="${index ? "lazy" : "eager"}" draggable="false"><span class="offer-slide-image-fallback" aria-hidden="true" hidden>✦</span></div>${
                       imageIndex < imageSources.length - 1
                         ? '<span class="offer-slide-plus" aria-hidden="true">+</span>'
                         : ""
