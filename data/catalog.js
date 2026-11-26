@@ -1074,7 +1074,7 @@ const QUEEN_PRODUCTS = [
     image: "img/productsImg/des4.jpeg",
     categoryId: "cafe-3",
   },
-  { id: "ds14", name: "فروت سلاد", price: 80, image: "", categoryId: "cafe-3" },
+  // { id: "ds14", name: "فروت سلاد", price: 80, image: "", categoryId: "cafe-3" },
 
   // ===================== الكافيه: وافل =====================
   // {
