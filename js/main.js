@@ -65,7 +65,7 @@ const escapeHtml = (value) =>
 const productModal = document.createElement("div");
 productModal.className = "product-modal";
 productModal.setAttribute("aria-hidden", "true");
-productModal.innerHTML = `<div class="product-modal-backdrop" data-product-modal-close></div><section class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" tabindex="-1"><button class="product-modal-close" type="button" data-product-modal-close aria-label="إغلاق">×</button><div class="product-modal-content"><button class="product-modal-image" type="button" aria-label="عرض الصورة بحجم الشاشة"><img alt=""><span>اضغط على الصورة لعرضها بحجم الشاشة</span></button><div class="product-modal-info"><span class="product-modal-category"></span><h2 id="product-modal-title"></h2><p class="product-modal-description"></p><p class="product-modal-old-price" hidden></p><strong class="product-modal-price"></strong><div class="product-modal-note-field"><label class="product-modal-note-label" for="product-modal-note">ملاحظات الطلب</label><input class="product-modal-note" id="product-modal-note" placeholder="اكتب أي ملاحظات على المنتج"></div><div class="product-modal-quantity-row"><span>الكمية</span><div class="q"><button type="button" data-modal-action="decrease" aria-label="تقليل الكمية">−</button><b class="product-modal-quantity">1</b><button type="button" data-modal-action="increase" aria-label="زيادة الكمية">+</button></div></div><button class="btn product-modal-add" type="button" data-modal-action="add">أضف للسلة</button></div></div></section>`;
+productModal.innerHTML = `<div class="product-modal-backdrop" data-product-modal-close></div><section class="product-modal-panel" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" tabindex="-1"><button class="product-modal-close" type="button" data-product-modal-close aria-label="إغلاق">×</button><div class="product-modal-content"><button class="product-modal-image" type="button" aria-label="عرض الصورة بحجم الشاشة"><img alt=""><span>اضغط على الصورة لعرضها بحجم الشاشة</span></button><div class="product-modal-info"><span class="product-modal-category"></span><h2 id="product-modal-title"></h2><p class="product-modal-description"></p><p class="product-modal-old-price" hidden></p><div class="product-modal-variants"></div><strong class="product-modal-price"></strong><div class="product-modal-note-field"><label class="product-modal-note-label" for="product-modal-note">ملاحظات الطلب</label><input class="product-modal-note" id="product-modal-note" placeholder="اكتب أي ملاحظات على المنتج"></div><div class="product-modal-quantity-row"><span>الكمية</span><div class="q"><button type="button" data-modal-action="decrease" aria-label="تقليل الكمية">−</button><b class="product-modal-quantity">1</b><button type="button" data-modal-action="increase" aria-label="زيادة الكمية">+</button></div></div><button class="btn product-modal-add" type="button" data-modal-action="add">أضف للسلة</button></div></div></section>`;
 const productLightbox = document.createElement("div");
 productLightbox.className = "product-lightbox";
 productLightbox.setAttribute("aria-hidden", "true");
@@ -77,33 +77,115 @@ let modalProduct;
 let modalProductType;
 let modalProductPrice;
 let modalProductIsOffer = false;
+let modalProductSize;
+let modalProductOptions = {};
+const productHasVariants = (product) =>
+  Boolean(
+    product &&
+      ((Array.isArray(product.sizes) && product.sizes.length) ||
+        (Array.isArray(product.options) && product.options.length)),
+  );
+const updateProductVariantState = () => {
+  const product = modalProduct;
+  if (!product) return;
+  const size = modalProductIsOffer ? undefined : modalProductSize;
+  const options = (modalProductIsOffer ? [] : product.options || []).map(
+    (option) => ({
+      id: option.id,
+      label: option.label,
+      choice: modalProductOptions[option.id] || "",
+    }),
+  );
+  const missingRequiredOption = (
+    modalProductIsOffer ? [] : product.options || []
+  ).some((option) => option.required && !modalProductOptions[option.id]);
+  modalProductPrice = modalProductIsOffer
+    ? Number(productModalOpener.dataset.price)
+    : size
+      ? size.price
+      : product.price;
+  productModal.querySelector(".product-modal-price").textContent =
+    `${modalProductPrice} ج.م`;
+  const addButton = productModal.querySelector(".product-modal-add");
+  addButton.disabled = missingRequiredOption;
+  const selectionLabels = [
+    ...(size
+      ? [`${product.sizeLabel || "الحجم"}: ${size.label}`]
+      : []),
+    ...options
+      .filter((option) => option.choice)
+      .map((option) => `${option.label}: ${option.choice}`),
+  ];
+  return {
+    price: modalProductPrice,
+    variantLabel: modalProductIsOffer ? "" : selectionLabels.join("، "),
+    variantKey:
+      !modalProductIsOffer && productHasVariants(product)
+        ? JSON.stringify({
+            size: size ? size.id : "",
+            options: options.map(({ id, choice }) => [id, choice]),
+          })
+        : undefined,
+    variantOptions: options.filter((option) => option.choice),
+  };
+};
+const renderProductVariants = (product, showVariants) => {
+  const variants = productModal.querySelector(".product-modal-variants");
+  if (!showVariants) {
+    variants.innerHTML = "";
+    modalProductSize = undefined;
+    modalProductOptions = {};
+    return;
+  }
+  modalProductSize =
+    Array.isArray(product.sizes) && product.sizes.length
+      ? product.sizes[0]
+      : undefined;
+  modalProductOptions = {};
+  variants.innerHTML = [
+    ...(product.sizes && product.sizes.length
+      ? [
+          `<fieldset class="product-modal-variant-group"><legend>${escapeHtml(product.sizeLabel || "الحجم")}</legend><div class="product-modal-variant-choices">${product.sizes
+            .map(
+              (size, index) =>
+                `<label><input type="radio" name="product-size" data-product-size="${index}" ${index === 0 ? "checked" : ""}><span>${escapeHtml(size.label)} <small>${size.price} ج.م</small></span></label>`,
+            )
+            .join("")}</div></fieldset>`,
+        ]
+      : []),
+    ...(product.options || []).map(
+      (option, optionIndex) =>
+        `<fieldset class="product-modal-variant-group"><legend>${escapeHtml(option.label)}${option.required ? " *" : ""}</legend><div class="product-modal-variant-choices">${(option.choices || [])
+          .map(
+            (choice, choiceIndex) =>
+              `<label><input type="radio" name="product-option-${optionIndex}" data-product-option="${escapeHtml(option.id)}" value="${escapeHtml(choice)}"><span>${escapeHtml(choice)}</span></label>`,
+          )
+          .join("")}</div></fieldset>`,
+    ),
+  ].join("");
+};
 const setProductModalCartState = (inCart) => {
   const noteField = productModal.querySelector(".product-modal-note-field");
   const quantityRow = productModal.querySelector(".product-modal-quantity-row");
+  const variants = productModal.querySelector(".product-modal-variants");
   const addButton = productModal.querySelector(".product-modal-add");
   noteField.hidden = modalProductIsOffer || inCart;
   quantityRow.hidden = inCart;
+  variants.hidden = inCart;
   addButton.dataset.modalAction = inCart ? "remove" : "add";
   addButton.classList.toggle("remove-btn", inCart);
   addButton.textContent = inCart ? "إزالة من السلة" : "أضف للسلة";
+  if (inCart) addButton.disabled = false;
+  else updateProductVariantState();
 };
-const updateMenuCardCartState = (inCart, note) => {
+const updateMenuCardCartState = (inCart) => {
   if (!productModalOpener || !productModalOpener.closest("#menu")) return;
   const card = productModalOpener;
-  const cardNote = card.querySelector("input");
   const button = card.querySelector(".btn");
-  const cardQuantity = card.querySelector(".q b");
   card.classList.toggle("in-cart", inCart);
-  if (cardNote) cardNote.value = note;
-  if (cardQuantity) cardQuantity.textContent = "1";
   button.dataset.a = inCart ? "remove" : "add";
   button.classList.toggle("remove-btn", inCart);
   button.textContent = inCart ? "إزالة من السلة" : "أضف للسلة";
-};
-const updateProductCardQuantity = (quantity) => {
-  const cardQuantity =
-    productModalOpener && productModalOpener.querySelector(".q b");
-  if (cardQuantity) cardQuantity.textContent = String(quantity);
 };
 const closeProductLightbox = () => {
   productLightbox.classList.remove("is-open");
@@ -144,7 +226,7 @@ const openProductModal = (card) => {
   const description = card.querySelector(".bd p");
   const price = card.querySelector(".price");
   const product = PRODUCTS.find((item) => item.id == card.dataset.id);
-  if (!image || !title || !description || !price || !product) return;
+  if (!image || !title || !price || !product) return;
   const category =
     card.querySelector(".offer-type") ||
     (card.closest(".menu-section") &&
@@ -152,9 +234,7 @@ const openProductModal = (card) => {
   modalProduct = product;
   modalProductType = card.dataset.productType;
   modalProductIsOffer = card.classList.contains("offer-card");
-  modalProductPrice = card.dataset.price
-    ? Number(card.dataset.price)
-    : product.price;
+  productModalOpener = card;
   const oldPrice = card.querySelector("del");
   const modalImage = productModal.querySelector(".product-modal-image img");
   modalImage.src = image.currentSrc || image.src;
@@ -164,31 +244,28 @@ const openProductModal = (card) => {
     : "";
   productModal.querySelector("#product-modal-title").textContent =
     title.textContent;
-  productModal.querySelector(".product-modal-description").textContent =
-    description.textContent;
+  const descriptionText = productModal.querySelector(
+    ".product-modal-description",
+  );
+  descriptionText.textContent = description ? description.textContent : "";
+  descriptionText.hidden = !descriptionText.textContent.trim();
   const oldPriceText = productModal.querySelector(".product-modal-old-price");
   oldPriceText.hidden = !oldPrice;
   oldPriceText.textContent = oldPrice
     ? `السعر قبل العرض: ${oldPrice.textContent}`
     : "";
-  productModal.querySelector(".product-modal-price").textContent =
-    price.textContent;
+  renderProductVariants(product, !modalProductIsOffer);
+  updateProductVariantState();
   const existingItem = get().find(
-    (item) => item.id == product.id && item.type == modalProductType,
+    (item) =>
+      item.id == product.id &&
+      item.type == modalProductType,
   );
-  const cardNote = card.querySelector("input");
   productModal.querySelector(".product-modal-note").value =
-    cardNote && cardNote.value
-      ? cardNote.value
-      : existingItem
-        ? existingItem.note || ""
-        : "";
+    existingItem ? existingItem.note || "" : "";
   const inCart = Boolean(existingItem) && !modalProductIsOffer;
-  const cardQuantity = card.querySelector(".q b");
-  productModal.querySelector(".product-modal-quantity").textContent =
-    inCart || !cardQuantity ? "1" : cardQuantity.textContent;
+  productModal.querySelector(".product-modal-quantity").textContent = "1";
   setProductModalCartState(inCart);
-  productModalOpener = card;
   productModal.classList.add("is-open");
   productModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("product-modal-open");
@@ -221,12 +298,12 @@ productModal.addEventListener("click", (event) => {
   else if (event.target.closest('[data-modal-action="increase"]')) {
     const quantity = productModal.querySelector(".product-modal-quantity");
     quantity.textContent = Number(quantity.textContent) + 1;
-    updateProductCardQuantity(Number(quantity.textContent));
   } else if (event.target.closest('[data-modal-action="decrease"]')) {
     const quantity = productModal.querySelector(".product-modal-quantity");
     quantity.textContent = Math.max(1, Number(quantity.textContent) - 1);
-    updateProductCardQuantity(Number(quantity.textContent));
   } else if (event.target.closest('[data-modal-action="add"]')) {
+    const variant = updateProductVariantState();
+    if (productModal.querySelector(".product-modal-add").disabled) return;
     const quantity = Number(
       productModal.querySelector(".product-modal-quantity").textContent,
     );
@@ -238,24 +315,24 @@ productModal.addEventListener("click", (event) => {
       modalProductType,
       quantity,
       note,
-      modalProductPrice,
+      variant.price,
+      {
+        variantKey: variant.variantKey,
+        variantLabel: variant.variantLabel,
+        variantOptions: variant.variantOptions,
+      },
     );
-    productModal.querySelector(".product-modal-quantity").textContent = "1";
-    if (modalProductIsOffer) {
-      updateProductCardQuantity(1);
-    } else {
-      updateMenuCardCartState(true, note);
-      setProductModalCartState(true);
-    }
+    updateMenuCardCartState(true);
+    setProductModalCartState(true);
   } else if (event.target.closest('[data-modal-action="remove"]')) {
-    const note = productModal.querySelector(".product-modal-note").value.trim();
     set(
       get().filter(
         (item) =>
           !(item.id == modalProduct.id && item.type == modalProductType),
       ),
     );
-    updateMenuCardCartState(false, note);
+    productModal.querySelector(".product-modal-quantity").textContent = "1";
+    updateMenuCardCartState(false);
     setProductModalCartState(false);
     toast("تمت الإزالة من السلة");
   } else if (event.target.closest("[data-product-modal-close]")) {
@@ -268,6 +345,18 @@ productModal.addEventListener("input", (event) => {
       productModalOpener && productModalOpener.querySelector("input");
     if (cardNote) cardNote.value = event.target.value;
   }
+});
+productModal.addEventListener("change", (event) => {
+  if (event.target.matches("[data-product-size]")) {
+    modalProductSize =
+      modalProduct.sizes[Number(event.target.dataset.productSize)];
+  } else if (event.target.matches("[data-product-option]")) {
+    modalProductOptions[event.target.dataset.productOption] =
+      event.target.value;
+  } else {
+    return;
+  }
+  updateProductVariantState();
 });
 productLightbox.addEventListener("click", (event) => {
   if (
@@ -370,7 +459,11 @@ document.addEventListener("mousemove", (e) => {
     k = t.classList.contains("tilt") ? 24 : 14;
   t.style.transform = `perspective(800px) rotateY(${x * k}deg) rotateX(${-y * k}deg)`;
 });
+const EMPTY_PRODUCT_IMAGE = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#29231a"/><stop offset="1" stop-color="#090909"/></linearGradient></defs><rect width="640" height="480" fill="url(#g)"/><circle cx="320" cy="220" r="112" fill="none" stroke="#c9a24b" stroke-opacity=".65" stroke-width="3"/><path d="M248 228h144l-20 62h-104zM270 218c8-39 27-58 50-58s42 19 50 58" fill="none" stroke="#f1d58a" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/><path d="M285 320h70" stroke="#c9a24b" stroke-linecap="round" stroke-width="5"/><text x="320" y="376" fill="#c9a24b" font-family="sans-serif" font-size="24" letter-spacing="8" text-anchor="middle">QUEEN</text></svg>',
+)}`;
 const img = (source) => {
+  if (typeof source !== "string" || !source.trim()) return EMPTY_PRODUCT_IMAGE;
   if (I[source]) return U(I[source]);
   return typeof source === "string" && source.startsWith("../img/")
     ? source.slice(3)
@@ -507,7 +600,7 @@ function menu(type) {
         const categoryProducts = products.filter((product) => {
           const matchesQuery =
             !normalizedQuery ||
-            `${product.name} ${product.description} ${category.name}`
+            `${product.name} ${product.description || ""} ${category.name}`
               .toLowerCase()
               .includes(normalizedQuery);
           return product.categoryId == category.id && matchesQuery;
@@ -517,8 +610,17 @@ function menu(type) {
           `<section class="menu-section"><h2 class="ttl">${category.icon} ${category.name}</h2><div class="grid">` +
           categoryProducts
             .map(
-              (product, i) =>
-                `<article class="card" data-product-card data-product-type="${type}" data-id="${product.id}" tabindex="0" role="group" aria-label="تفاصيل ${escapeHtml(product.name)}" aria-haspopup="dialog" style="animation-delay:${i * 0.1}s"><img src="${img(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy"><div class="bd"><h3>${escapeHtml(product.name)}</h3><p>${escapeHtml(product.description)}</p><div class="row"><span class="price">${product.price} ج.م</span><div class="q"><button data-a="-">−</button><b>1</b><button data-a="+">+</button></div></div><input placeholder="ملاحظات (${type == "cafe" ? "بدون صوصات..." : "بدون بصل..."})"><button class="btn" data-a="add">أضف للسلة</button></div></article>`,
+              (product, i) => {
+                const lowestPrice =
+                  product.sizes && product.sizes.length
+                    ? Math.min(...product.sizes.map((size) => size.price))
+                    : product.price;
+                const priceLabel =
+                  product.sizes && product.sizes.length
+                    ? `يبدأ من ${lowestPrice} ج.م`
+                    : `${product.price} ج.م`;
+                return `<article class="card" data-product-card data-product-type="${type}" data-id="${escapeHtml(product.id)}" tabindex="0" role="group" aria-label="تفاصيل ${escapeHtml(product.name)}" aria-haspopup="dialog" style="animation-delay:${i * 0.1}s"><img src="${escapeHtml(img(product.image))}" alt="${escapeHtml(product.name)}" loading="lazy"><div class="bd"><h3>${escapeHtml(product.name)}</h3>${product.description ? `<p>${escapeHtml(product.description)}</p>` : ""}<div class="row"><span class="price">${priceLabel}</span></div><button class="btn" data-a="add">عرض</button></div></article>`;
+              },
             )
             .join("") +
           "</div></section>"
@@ -534,7 +636,6 @@ function menu(type) {
       );
       if (cartItem) {
         card.classList.add("in-cart");
-        card.querySelector("input").value = cartItem.note || "";
         const button = card.querySelector('[data-a="add"]');
         button.dataset.a = "remove";
         button.classList.add("remove-btn");
@@ -677,19 +778,8 @@ function menu(type) {
       toast("تمت الإزالة من السلة");
       return;
     }
-    const q = cd.querySelector(".q b");
-    if (a == "+") q.textContent = +q.textContent + 1;
-    if (a == "-") q.textContent = Math.max(1, q.textContent - 1);
     if (a == "add") {
-      const x = products.find((product) => product.id == cd.dataset.id),
-        note = cd.querySelector("input").value.trim();
-      addToCart(x, type, +q.textContent, note);
-      q.textContent = 1;
-      cd.classList.add("in-cart");
-      const button = cd.querySelector('[data-a="add"]');
-      button.dataset.a = "remove";
-      button.classList.add("remove-btn");
-      button.textContent = "إزالة من السلة";
+      openProductModal(cd);
     }
   };
   show(activeCategory);
@@ -709,7 +799,7 @@ function offers() {
     items
       .map(({ product: x, price, type }, i) => {
         const discount = Math.round(((x.price - price) / x.price) * 100);
-        return `<article class="card offer-card" data-product-card data-product-type="${type}" data-id="${x.id}" data-price="${price}" tabindex="0" role="group" aria-label="تفاصيل ${escapeHtml(x.name)}" aria-haspopup="dialog" style="animation-delay:${i * 0.08}s"><div class="offer-image"><img src="${img(x.image)}" alt="${escapeHtml(x.name)}" loading="lazy"><span class="offer-tag">خصم ${discount}٪</span></div><div class="bd"><span class="offer-type">${type == "restaurant" ? "🍽 من المطعم" : "☕ من الكافيه"}</span><h3>${escapeHtml(x.name)}</h3><p>${escapeHtml(x.description)}</p><div class="row"><div class="offer-prices"><del>${x.price} ج.م</del><span class="price">${price} ج.م</span></div><div class="q"><button data-a="-" aria-label="تقليل الكمية">−</button><b>1</b><button data-a="+" aria-label="زيادة الكمية">+</button></div></div><button class="btn" data-a="add">أضف للسلة</button></div></article>`;
+        return `<article class="card offer-card" data-product-card data-product-type="${type}" data-id="${escapeHtml(x.id)}" data-price="${price}" tabindex="0" role="group" aria-label="تفاصيل ${escapeHtml(x.name)}" aria-haspopup="dialog" style="animation-delay:${i * 0.08}s"><div class="offer-image"><img src="${escapeHtml(img(x.image))}" alt="${escapeHtml(x.name)}" loading="lazy"><span class="offer-tag">خصم ${discount}٪</span></div><div class="bd"><span class="offer-type">${type == "restaurant" ? "🍽 من المطعم" : "☕ من الكافيه"}</span><h3>${escapeHtml(x.name)}</h3>${x.description ? `<p>${escapeHtml(x.description)}</p>` : ""}<div class="row"><div class="offer-prices"><del>${x.price} ج.م</del><span class="price">${price} ج.م</span></div><div class="q"><button data-a="-" aria-label="تقليل الكمية">−</button><b>1</b><button data-a="+" aria-label="زيادة الكمية">+</button></div></div><button class="btn" data-a="add">أضف للسلة</button></div></article>`;
       })
       .join("") +
     "</div>";
@@ -1373,7 +1463,7 @@ function cart() {
       ? c
           .map(
             (x, i) =>
-              `<div class="ci"><img src="${img(x.img)}"><div><b>${escapeHtml(x.name)}</b><br><small>${x.price} ج.م</small>${x.bundleSize ? `<small class="cart-bundle-details">الحجم: ${escapeHtml(x.bundleSize)}</small>` : ""}${Array.isArray(x.bundleItems) && x.bundleItems.length ? `<small class="cart-bundle-details">يشمل: ${x.bundleItems.map((item) => `${escapeHtml(item.name)} × ${item.qty}`).join("، ")}</small>` : ""}<label class="cart-note-label" for="cart-note-${i}">ملاحظة المنتج</label><input class="cart-note" id="cart-note-${i}" data-note-index="${i}" value="${escapeHtml(x.note || "")}" placeholder="أضف ملاحظة للمنتج"></div><div class="q"><button data-i="${i}" data-a="-">−</button><b>${x.qty}</b><button data-i="${i}" data-a="+">+</button></div><button class="x" data-i="${i}" data-a="x">✕</button></div>`,
+              `<div class="ci"><img src="${escapeHtml(img(x.img))}" alt="${escapeHtml(x.name)}"><div><b>${escapeHtml(x.name)}</b><br><small>${x.price} ج.م</small>${x.variantLabel ? `<small class="cart-bundle-details">${escapeHtml(x.variantLabel)}</small>` : ""}${x.bundleSize ? `<small class="cart-bundle-details">الحجم: ${escapeHtml(x.bundleSize)}</small>` : ""}${Array.isArray(x.bundleItems) && x.bundleItems.length ? `<small class="cart-bundle-details">يشمل: ${x.bundleItems.map((item) => `${escapeHtml(item.name)} × ${item.qty}`).join("، ")}</small>` : ""}<label class="cart-note-label" for="cart-note-${i}">ملاحظة المنتج</label><input class="cart-note" id="cart-note-${i}" data-note-index="${i}" value="${escapeHtml(x.note || "")}" placeholder="أضف ملاحظة للمنتج"></div><div class="q"><button data-i="${i}" data-a="-" aria-label="تقليل الكمية">−</button><b>${x.qty}</b><button data-i="${i}" data-a="+" aria-label="زيادة الكمية">+</button></div><button class="x" data-i="${i}" data-a="x" aria-label="إزالة ${escapeHtml(x.name)}">✕</button></div>`,
           )
           .join("")
       : "<p>السلة فارغة. <a href='restaurant.html' style='color:var(--g)'>تصفح المطعم</a></p>";
@@ -1457,6 +1547,8 @@ function cart() {
           L.push(
             `- ${x.name} × ${x.qty} = ${x.price * x.qty} ج.م${x.note ? " (" + x.note + ")" : ""}`,
           );
+          if (x.variantLabel)
+            L.push(`  ${x.variantLabel}`);
           if (x.bundleSize)
             L.push(`  الحجم: ${x.bundleSize}`);
           if (Array.isArray(x.bundleItems) && x.bundleItems.length)
@@ -1554,7 +1646,8 @@ if (P == "cart") cart();
 if (P == "restaurant" || P == "cafe" || P == "offers") {
   const categories = QUEEN_CATEGORIES,
     products = QUEEN_PRODUCTS,
-    offerList = QUEEN_OFFERS;
+    offerList =
+      typeof QUEEN_OFFERS === "undefined" ? [] : QUEEN_OFFERS;
   if (
     !Array.isArray(categories) ||
     !Array.isArray(products) ||

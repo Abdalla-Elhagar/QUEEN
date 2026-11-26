@@ -1053,6 +1053,47 @@ body[data-page="cafe"] {
 .product-modal-old-price[hidden] {
   display: none;
 }
+.product-modal-variants {
+  width: 100%;
+}
+.product-modal-variants[hidden] {
+  display: none;
+}
+.product-modal-variant-group {
+  width: 100%;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  border: 0;
+}
+.product-modal-variant-group legend {
+  margin-bottom: 0.55rem;
+  color: #d7d1c5;
+  font-size: 0.88rem;
+}
+.product-modal-variant-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.product-modal-variant-choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(201, 162, 75, 0.45);
+  border-radius: 999px;
+  color: #eee;
+  cursor: pointer;
+}
+.product-modal-variant-choices input[type="radio"] {
+  width: auto;
+  margin: 0;
+  accent-color: var(--g);
+}
+.product-modal-variant-choices small {
+  color: var(--g2);
+}
 .product-modal-price {
   margin-top: 0.7rem;
   color: var(--g2);
@@ -1085,6 +1126,12 @@ body[data-page="cafe"] {
 .product-modal-add {
   width: 100%;
   margin-top: 1.2rem;
+}
+.product-modal-add:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
 }
 .product-modal-add.remove-btn {
   background: linear-gradient(135deg, #ff8585, #d62828);
