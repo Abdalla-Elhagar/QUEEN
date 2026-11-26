@@ -1137,18 +1137,18 @@ const QUEEN_PRODUCTS = [
   // },
 
   // ===================== الكافيه: بان كيك =====================
-  // {
-  //   id: "pan01",
-  //   name: "بان كيك كلاسيك",
-  //   price: 80,
-  //   sizeLabel: "عدد القطع",
-  //   sizes: [
-  //     { id: "p15", label: "15 قطعة", price: 80 },
-  //     { id: "p25", label: "25 قطعة", price: 120 },
-  //   ],
-  //   image: "",
-  //   categoryId: "cafe-10",
-  // },
+  {
+    id: "pan01",
+    name: "بان كيك كلاسيك",
+    price: 80,
+    sizeLabel: "عدد القطع",
+    sizes: [
+      { id: "p15", label: "15 قطعة", price: 80 },
+      { id: "p25", label: "25 قطعة", price: 120 },
+    ],
+    image: "img/productsImg/ban2.jpeg",
+    categoryId: "cafe-10",
+  },
   // {
   //   id: "pan02",
   //   name: "بان كيك إسبشيال",
