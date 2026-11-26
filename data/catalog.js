@@ -37,7 +37,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 60 },
       { id: "l", label: "كبير", price: 80 },
     ],
-    image: "",
+      image: "img/productsImg/ju3.jpeg",
     categoryId: "restaurant-3",
   },
   {
