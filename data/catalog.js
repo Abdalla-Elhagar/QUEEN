@@ -119,7 +119,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 130 },
       { id: "l", label: "كبير", price: 150 },
     ],
-  image: "img/productsImg/piz.jpeg",
+  image: "img/productsImg/piz2.jpeg",
     categoryId: "restaurant-3",
   },
   {
@@ -130,7 +130,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 150 },
       { id: "l", label: "كبير", price: 190 },
     ],
-    image: "",
+  image: "img/productsImg/piz3.jpeg",
     categoryId: "restaurant-3",
   },
   {
@@ -141,7 +141,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 160 },
       { id: "l", label: "كبير", price: 190 },
     ],
-    image: "",
+  image: "img/productsImg/piz5.jpeg",
     categoryId: "restaurant-3",
   },
   {
@@ -152,20 +152,10 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 140 },
       { id: "l", label: "كبير", price: 170 },
     ],
-    image: "",
+  image: "img/productsImg/piz4.jpeg",
     categoryId: "restaurant-3",
   },
-  {
-    id: "pizza-chicken-bbq",
-    name: "بيتزا تشكن باربكيو",
-    price: 140,
-    sizes: [
-      { id: "m", label: "وسط", price: 140 },
-      { id: "l", label: "كبير", price: 170 },
-    ],
-    image: "",
-    categoryId: "restaurant-3",
-  },
+
   {
     id: "pizza-fajita",
     name: "بيتزا فاهيتا",
@@ -174,7 +164,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 140 },
       { id: "l", label: "كبير", price: 170 },
     ],
-    image: "",
+  image: "img/productsImg/piz6.jpeg",
     categoryId: "restaurant-3",
   },
   {
@@ -185,7 +175,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 140 },
       { id: "l", label: "كبير", price: 170 },
     ],
-    image: "",
+  image: "img/productsImg/piz10.jpeg",
     categoryId: "restaurant-3",
   },
   {
@@ -196,31 +186,10 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 160 },
       { id: "l", label: "كبير", price: 190 },
     ],
-    image: "",
+  image: "img/productsImg/piz7.jpeg",
     categoryId: "restaurant-3",
   },
-  {
-    id: "pizza-hotdog",
-    name: "بيتزا هوت دوج",
-    price: 140,
-    sizes: [
-      { id: "m", label: "وسط", price: 140 },
-      { id: "l", label: "كبير", price: 170 },
-    ],
-    image: "",
-    categoryId: "restaurant-3",
-  },
-  {
-    id: "pizza-salami",
-    name: "بيتزا سلامي",
-    price: 140,
-    sizes: [
-      { id: "m", label: "وسط", price: 140 },
-      { id: "l", label: "كبير", price: 150 },
-    ],
-    image: "",
-    categoryId: "restaurant-3",
-  },
+
   {
     id: "pizza-pastrami",
     name: "بيتزا بسطرمة",
@@ -229,7 +198,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 150 },
       { id: "l", label: "كبير", price: 180 },
     ],
-    image: "",
+  image: "img/productsImg/piz8.jpeg",
     categoryId: "restaurant-3",
   },
   // TODO: بيتزا جمبري - السعر مطموس في المنيو
@@ -242,7 +211,7 @@ const QUEEN_PRODUCTS = [
       { id: "m", label: "وسط", price: 150 },
       { id: "l", label: "كبير", price: 180 },
     ],
-    image: "",
+  image: "img/productsImg/piz9.jpeg",
     categoryId: "restaurant-3",
   },
 
@@ -256,7 +225,7 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 30 },
       { id: "syrian", label: "سوري", price: 40 },
     ],
-    image: "",
+  image: "img/productsImg/pat1.png",
     categoryId: "restaurant-5",
   },
   {
@@ -268,21 +237,21 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 35 },
       { id: "syrian", label: "سوري", price: 45 },
     ],
-    image: "",
+  image: "img/productsImg/pat2.png",
     categoryId: "restaurant-5",
   },
-  {
-    id: "sw-crispy",
-    name: "ساندوتش كريسبي",
-    price: 60,
-    sizeLabel: "نوع العيش",
-    sizes: [
-      { id: "french", label: "فرنساوي", price: 60 },
-      { id: "syrian", label: "سوري", price: 70 },
-    ],
-    image: "",
-    categoryId: "restaurant-5",
-  },
+  // {
+  //   id: "sw-crispy",
+  //   name: "ساندوتش كريسبي",
+  //   price: 60,
+  //   sizeLabel: "نوع العيش",
+  //   sizes: [
+  //     { id: "french", label: "فرنساوي", price: 60 },
+  //     { id: "syrian", label: "سوري", price: 70 },
+  //   ],
+  //   image: "",
+  //   categoryId: "restaurant-5",
+  // },
   {
     id: "sw-zinger",
     name: "ساندوتش زنجر",
@@ -292,21 +261,11 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 60 },
       { id: "syrian", label: "سوري", price: 70 },
     ],
-    image: "",
+  image: "img/productsImg/pat3.png",
     categoryId: "restaurant-5",
   },
-  {
-    id: "sw-mexican",
-    name: "ساندوتش مكسيكي",
-    price: 60,
-    sizeLabel: "نوع العيش",
-    sizes: [
-      { id: "french", label: "فرنساوي", price: 60 },
-      { id: "syrian", label: "سوري", price: 70 },
-    ],
-    image: "",
-    categoryId: "restaurant-5",
-  },
+  
+
   {
     id: "sw-fajita",
     name: "ساندوتش فاهيتا",
@@ -316,7 +275,7 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 60 },
       { id: "syrian", label: "سوري", price: 70 },
     ],
-    image: "",
+  image: "img/productsImg/pat4.jpg",
     categoryId: "restaurant-5",
   },
   {
@@ -328,7 +287,7 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 35 },
       { id: "syrian", label: "سوري", price: 45 },
     ],
-    image: "",
+  image: "img/productsImg/pat5.jpg",
     categoryId: "restaurant-5",
   },
   {
@@ -340,7 +299,7 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 45 },
       { id: "syrian", label: "سوري", price: 55 },
     ],
-    image: "",
+  image: "img/productsImg/pat6.jpg",
     categoryId: "restaurant-5",
   },
   {
@@ -352,166 +311,132 @@ const QUEEN_PRODUCTS = [
       { id: "french", label: "فرنساوي", price: 60 },
       { id: "syrian", label: "سوري", price: 70 },
     ],
-    image: "",
+  image: "img/productsImg/pat7.jpg",
     categoryId: "restaurant-5",
   },
-  {
-    id: "sw-burger",
-    name: "ساندوتش برجر",
-    price: 50,
-    sizeLabel: "نوع العيش",
-    sizes: [
-      { id: "french", label: "فرنساوي", price: 50 },
-      { id: "syrian", label: "سوري", price: 50 },
-    ],
-    image: "",
-    categoryId: "restaurant-5",
-  },
-  {
-    id: "sw-burger-egg",
-    name: "ساندوتش برجر بيض",
-    price: 60,
-    sizeLabel: "نوع العيش",
-    sizes: [
-      { id: "french", label: "فرنساوي", price: 60 },
-      { id: "syrian", label: "سوري", price: 60 },
-    ],
-    image: "",
-    categoryId: "restaurant-5",
-  },
+
+
 
   // ===================== المطعم: كريب =====================
   {
     id: "crepe-potato",
     name: "كريب بطاطس",
     price: 55,
-    image: "",
+  image: "img/productsImg/krp1.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-crispy",
     name: "كريب كريسبي",
     price: 75,
-    image: "",
+  image: "img/productsImg/krp2.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-zinger",
     name: "كريب زنجر",
     price: 75,
-    image: "",
+  image: "img/productsImg/krp3.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-shish",
     name: "كريب شيش",
     price: 75,
-    image: "",
+  image: "img/productsImg/krp4.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-chicken-mix",
     name: "كريب مكس دجاج",
     price: 90,
-    image: "",
+  image: "img/productsImg/krp5.jpeg",
     categoryId: "restaurant-6",
   },
-  {
-    id: "crepe-hotdog",
-    name: "كريب هوت دوج",
-    price: 80,
-    image: "",
-    categoryId: "restaurant-6",
-  },
-  {
-    id: "crepe-burger",
-    name: "كريب برجر",
-    price: 80,
-    image: "",
-    categoryId: "restaurant-6",
-  },
+
+
   {
     id: "crepe-pastrami",
     name: "كريب بسطرمة",
     price: 85,
-    image: "",
+  image: "img/productsImg/krp6.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-kofta",
     name: "كريب كفتة",
     price: 80,
-    image: "",
+  image: "img/productsImg/krp7.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-meat-mix",
     name: "كريب مكس لحوم",
     price: 95,
-    image: "",
+    image: "img/productsImg/krp8.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-nutella",
     name: "كريب شكولاتة نوتيلا",
     price: 65,
-    image: "",
+    image: "img/productsImg/krp9.jpeg",
     categoryId: "restaurant-6",
   },
   {
     id: "crepe-nutella-banana",
     name: "كريب نوتيلا موز",
     price: 75,
-    image: "",
+    image: "img/productsImg/krp10.jpeg",
     categoryId: "restaurant-6",
   },
 
-  // ===================== المطعم: إضافات =====================
-  {
-    id: "extra-water",
-    name: "مياه معدنية",
-    price: 10,
-    sizes: [
-      { id: "m", label: "وسط", price: 10 },
-      { id: "l", label: "كبير", price: 20 },
-    ],
-    image: "",
-    categoryId: "restaurant-7",
-  },
-  // TODO: بيبسي لتر - السعر مكتوب 00 في المنيو
-  {
-    id: "extra-mozzarella",
-    name: "إضافة موتزاريلا",
-    price: 20,
-    sizes: [
-      { id: "m", label: "وسط", price: 20 },
-      { id: "l", label: "كبير", price: 30 },
-    ],
-    image: "",
-    categoryId: "restaurant-7",
-  },
-  {
-    id: "extra-meat",
-    name: "إضافة لحوم",
-    price: 20,
-    sizes: [
-      { id: "m", label: "وسط", price: 20 },
-      { id: "l", label: "كبير", price: 30 },
-    ],
-    image: "",
-    categoryId: "restaurant-7",
-  },
-  {
-    id: "extra-chicken",
-    name: "إضافة دجاج",
-    price: 20,
-    sizes: [
-      { id: "m", label: "وسط", price: 20 },
-      { id: "l", label: "كبير", price: 30 },
-    ],
-    image: "",
-    categoryId: "restaurant-7",
-  },
+  // // ===================== المطعم: إضافات =====================
+  // {
+  //   id: "extra-water",
+  //   name: "مياه معدنية",
+  //   price: 10,
+  //   sizes: [
+  //     { id: "m", label: "وسط", price: 10 },
+  //     { id: "l", label: "كبير", price: 20 },
+  //   ],
+  //   image: "",
+  //   categoryId: "restaurant-7",
+  // },
+  // // TODO: بيبسي لتر - السعر مكتوب 00 في المنيو
+  // {
+  //   id: "extra-mozzarella",
+  //   name: "إضافة موتزاريلا",
+  //   price: 20,
+  //   sizes: [
+  //     { id: "m", label: "وسط", price: 20 },
+  //     { id: "l", label: "كبير", price: 30 },
+  //   ],
+  //   image: "",
+  //   categoryId: "restaurant-7",
+  // },
+  // {
+  //   id: "extra-meat",
+  //   name: "إضافة لحوم",
+  //   price: 20,
+  //   sizes: [
+  //     { id: "m", label: "وسط", price: 20 },
+  //     { id: "l", label: "كبير", price: 30 },
+  //   ],
+  //   image: "",
+  //   categoryId: "restaurant-7",
+  // },
+  // {
+  //   id: "extra-chicken",
+  //   name: "إضافة دجاج",
+  //   price: 20,
+  //   sizes: [
+  //     { id: "m", label: "وسط", price: 20 },
+  //     { id: "l", label: "كبير", price: 30 },
+  //   ],
+  //   image: "",
+  //   categoryId: "restaurant-7",
+  // },
 
   // // ===================== الكافيه: مشروبات ساخنة =====================
   // {
